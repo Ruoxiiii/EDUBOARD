@@ -7,6 +7,8 @@
     ];
     $reactionEmojis = ['heart' => '❤️', 'like' => '👍', 'fire' => '🔥', 'sad' => '😢'];
     $mediaPaths = is_array($announcement->media_paths) ? $announcement->media_paths : json_decode($announcement->media_paths ?? '[]', true) ?? [];
+    $mediaCount = count($mediaPaths);
+    $isStacked = $mediaCount >= 4;
 @endphp
 
 <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
@@ -47,36 +49,74 @@
     <p class="mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3">{{ Str::limit($announcement->content, 200) }}</p>
 
     {{-- Display uploaded media --}}
-    @if($mediaPaths && count($mediaPaths))
-        @php
-            $mediaCount = count($mediaPaths);
-            $isSingle = $mediaCount === 1;
-        @endphp
-        <div class="mt-3 {{ $isSingle ? 'space-y-2' : 'grid grid-cols-2 gap-2' }}">
-            @foreach($mediaPaths as $path)
-                @php
-                    $isImage = in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif']);
-                    $isVideo = in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']);
-                @endphp
-                @if($isImage)
-                    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity {{ $isSingle ? '' : 'aspect-video' }}">
-                        <img 
-                            src="{{ asset('storage/'.$path) }}" 
-                            alt="{{ $announcement->title }}" 
-                            class="w-full h-full object-cover"
-                            onclick="openImageModal('{{ asset('storage/'.$path) }}')"
-                        />
-                    </div>
-                @elseif($isVideo)
-                    <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 {{ $isSingle ? '' : 'aspect-video' }}">
-                        <video controls class="w-full h-full object-cover bg-gray-50 dark:bg-gray-900">
-                            <source src="{{ asset('storage/'.$path) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                @endif
-            @endforeach
-        </div>
+    @if($mediaPaths && $mediaCount > 0)
+        @if($isStacked)
+            {{-- Facebook-style grid layout for 4+ images --}}
+            <div class="mt-3 grid grid-cols-2 gap-2">
+                @foreach($mediaPaths as $index => $path)
+                    @if($index < 4)
+                        @php
+                            $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+                            $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif']);
+                            $isVideo = in_array($extension, ['mp4', 'mov', 'avi']);
+                        @endphp
+                        <div class="relative aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer group">
+                            @if($isImage)
+                                <img 
+                                    src="{{ asset('storage/'.$path) }}" 
+                                    alt="{{ $announcement->title }}" 
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                                    onclick="openImageModal('{{ asset('storage/'.$path) }}')"
+                                />
+                            @elseif($isVideo)
+                                <video 
+                                    controls 
+                                    class="w-full h-full object-cover bg-gray-50 dark:bg-gray-900 group-hover:scale-105 transition-transform duration-200"
+                                >
+                                    <source src="{{ asset('storage/'.$path) }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            @endif
+                            
+                            {{-- Overlay for 4th image only --}}
+                            @if($index === 3 && $mediaCount > 4)
+                                <div class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+                                    <span class="text-white text-2xl font-bold">+{{ $mediaCount - 4 }}</span>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        @else
+            {{-- Grid layout for 1-3 images --}}
+            <div class="mt-3 {{ $mediaCount === 1 ? 'space-y-2' : 'grid grid-cols-2 gap-2' }}">
+                @foreach($mediaPaths as $path)
+                    @php
+                        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+                        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif']);
+                        $isVideo = in_array($extension, ['mp4', 'mov', 'avi']);
+                    @endphp
+                    @if($isImage)
+                        <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity {{ $mediaCount === 1 ? '' : 'aspect-video' }}">
+                            <img 
+                                src="{{ asset('storage/'.$path) }}" 
+                                alt="{{ $announcement->title }}" 
+                                class="w-full h-full object-cover"
+                                onclick="openImageModal('{{ asset('storage/'.$path) }}')"
+                            />
+                        </div>
+                    @elseif($isVideo)
+                        <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 {{ $mediaCount === 1 ? '' : 'aspect-video' }}">
+                            <video controls class="w-full h-full object-cover bg-gray-50 dark:bg-gray-900">
+                                <source src="{{ asset('storage/'.$path) }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        @endif
     @endif
 
     @if($showReactions ?? true)
@@ -95,9 +135,9 @@
 
 {{-- Image Modal --}}
 <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden flex items-center justify-center p-4" onclick="closeImageModal()">
-    <div class="relative max-w-4xl max-h-full">
-        <img id="modalImage" src="" alt="Full size image" class="max-w-full max-h-full object-contain rounded-lg" />
-        <button onclick="closeImageModal()" class="absolute top-2 right-2 bg-white text-gray-800 rounded-full p-2 hover:bg-gray-200">
+    <div class="relative w-[90vw] h-[90vh] max-w-6xl max-h-[90vh]">
+        <img id="modalImage" src="" alt="Full size image" class="w-full h-full object-contain rounded-lg" />
+        <button onclick="closeImageModal()" class="absolute top-4 right-4 bg-white text-gray-800 rounded-full p-2 hover:bg-gray-200 shadow-lg">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -117,10 +157,29 @@ function closeImageModal() {
     document.body.style.overflow = 'auto';
 }
 
-// Close modal on ESC key
+// Keyboard navigation for stacked images
 document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('imageModal');
+    if (modal.classList.contains('hidden')) return;
+    
     if (e.key === 'Escape') {
         closeImageModal();
+    } else if (e.key === 'ArrowLeft') {
+        const gallery = document.querySelector('[x-data]');
+        if (gallery && gallery.__x) {
+            const currentImage = gallery.__x.$data.currentImage || 0;
+            const totalImages = gallery.__x.$data.totalImages || 0;
+            const newImage = currentImage > 0 ? currentImage - 1 : totalImages - 1;
+            gallery.__x.$data.currentImage = newImage;
+        }
+    } else if (e.key === 'ArrowRight') {
+        const gallery = document.querySelector('[x-data]');
+        if (gallery && gallery.__x) {
+            const currentImage = gallery.__x.$data.currentImage || 0;
+            const totalImages = gallery.__x.$data.totalImages || 0;
+            const newImage = currentImage < totalImages - 1 ? currentImage + 1 : 0;
+            gallery.__x.$data.currentImage = newImage;
+        }
     }
 });
 </script>

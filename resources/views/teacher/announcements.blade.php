@@ -8,21 +8,21 @@
     <div class="space-y-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Announcements</h1>
 
-        {{-- Category Filter (simple version) --}}
-        <div class="flex flex-wrap gap-2">
-            <button
-                class="px-3 py-1 rounded-full text-sm font-medium bg-blue-600 text-white"
-                onclick="window.location.href='?category=All'"
+        {{-- Category Filter --}}
+        <div class="flex flex-wrap gap-2 mb-6">
+            <a
+                href="?category=All"
+                class="px-3 py-1 rounded-full text-sm font-medium {{ request('category', 'All') === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
             >
                 All
-            </button>
+            </a>
             @foreach(['General', 'Academic', 'Events', 'Urgent'] as $cat)
-                <button
-                    class="px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    onclick="window.location.href='?category={{ $cat }}'"
+                <a
+                    href="?category={{ $cat }}"
+                    class="px-3 py-1 rounded-full text-sm font-medium {{ request('category', 'All') === $cat ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
                 >
                     {{ $cat }}
-                </button>
+                </a>
             @endforeach
         </div>
 

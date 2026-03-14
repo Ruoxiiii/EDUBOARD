@@ -59,9 +59,14 @@
                         <div class="space-y-2">
                             @foreach($mediaPaths as $index => $path)
                                 <div class="flex items-center gap-3 p-2 border border-gray-200 dark:border-gray-700 rounded-lg">
-                                    @if(str_ends_with(strtolower($path), ['.jpg', '.jpeg', '.png', '.gif']))
+                                    @php
+                                        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+                                        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif']);
+                                        $isVideo = in_array($extension, ['mp4', 'mov', 'avi']);
+                                    @endphp
+                                    @if($isImage)
                                         <img src="{{ asset('storage/'.$path) }}" alt="Current media" class="h-16 w-16 object-cover rounded" />
-                                    @elseif(str_ends_with(strtolower($path), ['.mp4', '.mov', '.avi']))
+                                    @elseif($isVideo)
                                         <div class="h-16 w-16 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-xs text-gray-500">Video</div>
                                     @endif
                                     <div class="flex-1 text-sm text-gray-600 dark:text-gray-400 truncate">{{ basename($path) }}</div>
