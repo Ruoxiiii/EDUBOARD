@@ -33,7 +33,7 @@
 
         <div class="space-y-3">
             @php
-                $myAnnouncements = \App\Models\Announcement::with('postedBy')->where('posted_by', Auth::id())->latest()->get();
+                $myAnnouncements = \App\Models\Announcement::with('postedBy')->where('posted_by', Auth::id())->orderBy('is_pinned', 'desc')->orderBy('pinned_at', 'desc')->latest()->get();
             @endphp
 
             @forelse($myAnnouncements as $announcement)

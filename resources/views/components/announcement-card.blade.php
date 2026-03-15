@@ -91,7 +91,7 @@
                             $isVideo = in_array($extension, ['mp4', 'mov', 'avi']);
                         @endphp
                         <div 
-                            class="relative h-40 sm:h-48 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer group"
+                            class="relative h-[250px] sm:h-[300px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer group"
                             @click="{{ $index === 3 && $mediaCount > 4 ? 'openGallery()' : 'openViewer('.$index.')' }}"
                         >
                             @if($isImage)
@@ -128,7 +128,7 @@
                         $isVideo = in_array($extension, ['mp4', 'mov', 'avi']);
                     @endphp
                     <div 
-                        class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity {{ $mediaCount === 1 ? 'h-64 sm:h-80' : 'h-40 sm:h-56' }} {{ $mediaCount === 3 && $index === 0 ? 'col-span-2 sm:h-72' : '' }}"
+                        class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity {{ $mediaCount === 1 ? 'h-[400px] sm:h-[500px]' : 'h-[250px] sm:h-[350px]' }} {{ $mediaCount === 3 && $index === 0 ? 'col-span-2 sm:h-[450px]' : '' }}"
                         @click="openViewer({{ $index }})"
                     >
                         @if($isImage)

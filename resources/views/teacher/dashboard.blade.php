@@ -53,7 +53,7 @@
             <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Recent Announcements</h2>
             <div class="space-y-3">
                 @php
-                    $recentAnnouncements = \App\Models\Announcement::with('postedBy')->latest()->take(3)->get();
+                    $recentAnnouncements = \App\Models\Announcement::with('postedBy')->orderBy('is_pinned', 'desc')->orderBy('pinned_at', 'desc')->latest()->take(3)->get();
                 @endphp
                 @forelse($recentAnnouncements as $announcement)
                     <x-announcement-card :announcement="$announcement" :show-reactions="false" />

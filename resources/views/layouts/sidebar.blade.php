@@ -1,24 +1,24 @@
-<aside class="w-72 bg-slate-900 text-slate-200 min-h-screen flex flex-col sticky top-0" style="height: 100vh;">
+<aside class="w-72 bg-slate-900 text-slate-200 min-h-screen flex flex-col sticky top-0 border-r border-slate-800 transition-colors duration-300" style="height: 100vh;">
     <div class="px-5 py-4 border-b border-slate-800">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-            <div class="h-9 w-9 rounded-lg bg-slate-800 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-emerald-400">
+            <div class="h-9 w-9 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-white">
                     <path d="M3 12l9-9 9 9" />
                     <path d="M9 21V9h6v12" />
                 </svg>
             </div>
             <div class="leading-tight">
-                <div class="text-sm font-semibold text-white">EduBoard</div>
-                <div class="text-xs text-slate-400">Teacher Portal</div>
+                <div class="text-sm font-bold text-white">EduBoard</div>
+                <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{{ auth()->user()->role }} Portal</div>
             </div>
         </a> 
     </div>
 
-    <nav class="px-3 py-4 flex-1 space-y-1">
+    <nav class="px-3 py-4 flex-1 space-y-1 overflow-y-auto">
         @php
-            $linkBase = 'group flex items-center gap-3 rounded-md px-3 py-2 text-sm transition';
-            $linkInactive = 'text-slate-300 hover:bg-slate-800 hover:text-white';
-            $linkActive = 'bg-slate-800 text-emerald-300';
+            $linkBase = 'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all duration-200';
+            $linkInactive = 'text-slate-400 hover:bg-slate-800/50 hover:text-white';
+            $linkActive = 'bg-blue-900/20 text-blue-400 shadow-sm shadow-blue-500/10';
         @endphp
 
         @if(auth()->user()->role === 'admin')

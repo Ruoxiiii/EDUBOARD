@@ -70,9 +70,9 @@
                                         <div class="h-16 w-16 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-xs text-gray-500">Video</div>
                                     @endif
                                     <div class="flex-1 text-sm text-gray-600 dark:text-gray-400 truncate">{{ basename($path) }}</div>
-                                    <button type="button" onclick="removeMedia({{ $index }})" class="text-red-600 hover:text-red-700 text-sm">Remove</button>
+                                    <button type="button" onclick="removeMedia({{ $index }}, this)" class="text-red-600 hover:text-red-700 text-sm font-medium">Remove</button>
                                 </div>
-                                <input type="hidden" name="remove_media[]" value="{{ $index }}" id="remove_media_{{ $index }}" style="display:none;" />
+                                <input type="hidden" name="remove_media[]" value="{{ $index }}" id="remove_media_{{ $index }}" disabled />
                             @endforeach
                         </div>
                     </div>
@@ -81,33 +81,38 @@
                 {{-- New Media Upload --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1.5">Upload New Media</label>
-                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-blue-500/50 transition-colors cursor-pointer">
+                    <div class="relative group">
                         <input
                             type="file"
                             name="media[]"
                             multiple
                             accept="image/*,video/*"
-                            class="w-full opacity-0 cursor-pointer"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                             onchange="previewNewMedia(this)"
                         />
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-8 w-8 mx-auto text-gray-500 dark:text-gray-400 mb-2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Click to add more images/videos</p>
+                        <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center group-hover:border-blue-500/50 group-hover:bg-blue-50/5 dark:group-hover:bg-blue-900/10 transition-all duration-200">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-6 w-6 text-blue-600 dark:text-blue-400">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Click to add more images/videos</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, MP4 or MOV up to 10MB</p>
+                        </div>
                     </div>
-                    <div id="new_media_preview" class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2"></div>
+                    <div id="new_media_preview" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4"></div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" name="is_pinned" value="1" {{ $announcement->is_pinned ? 'checked' : '' }} class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
-                    <label class="text-sm text-gray-900 dark:text-gray-100">Pin this announcement</label>
+                <div class="flex items-center gap-2 py-2">
+                    <input type="checkbox" name="is_pinned" id="is_pinned" value="1" {{ $announcement->is_pinned ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 bg-white dark:bg-gray-900">
+                    <label for="is_pinned" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">Pin this announcement to top</label>
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">
+                <div class="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <button type="submit" class="flex-1 sm:flex-none px-6 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all active:scale-95">
                         Update Announcement
                     </button>
-                    <a href="{{ route('teacher.my-announcements') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300">
+                    <a href="{{ route('teacher.my-announcements') }}" class="flex-1 sm:flex-none px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 text-center transition-all">
                         Cancel
                     </a>
                 </div>
@@ -116,34 +121,44 @@
     </div>
 
     <script>
-        function removeMedia(index) {
-            document.getElementById('remove_media_' + index).style.display = 'block';
-            event.target.closest('.flex').style.display = 'none';
+        function removeMedia(index, button) {
+            const input = document.getElementById('remove_media_' + index);
+            if (input) {
+                input.disabled = false;
+                button.closest('.flex').style.display = 'none';
+            }
         }
 
         function previewNewMedia(input) {
             const preview = document.getElementById('new_media_preview');
             preview.innerHTML = '';
             
-            Array.from(input.files).forEach((file, index) => {
-                const div = document.createElement('div');
-                div.className = 'relative group';
-                
-                if (file.type.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.src = URL.createObjectURL(file);
-                    img.className = 'w-full h-20 object-cover rounded';
-                    div.appendChild(img);
-                } else if (file.type.startsWith('video/')) {
-                    const video = document.createElement('video');
-                    video.src = URL.createObjectURL(file);
-                    video.className = 'w-full h-20 object-cover rounded';
-                    video.controls = true;
-                    div.appendChild(video);
-                }
-                
-                preview.appendChild(div);
-            });
+            if (input.files) {
+                Array.from(input.files).forEach((file) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.className = 'relative aspect-video rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shadow-sm';
+                        
+                        if (file.type.startsWith('image/')) {
+                            div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                        } else if (file.type.startsWith('video/')) {
+                            div.innerHTML = `
+                                <video class="w-full h-full object-cover">
+                                    <source src="${e.target.result}" type="${file.type}">
+                                </video>
+                                <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+                                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.333-5.89a1.5 1.5 0 000-2.538L6.3 2.841z" />
+                                    </svg>
+                                </div>
+                            `;
+                        }
+                        preview.appendChild(div);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
         }
     </script>
 </x-app-layout>

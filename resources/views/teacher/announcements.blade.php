@@ -30,8 +30,8 @@
             @php
                 $filter = request('category', 'All');
                 $announcements = $filter === 'All'
-                    ? \App\Models\Announcement::with('postedBy')->latest()->get()
-                    : \App\Models\Announcement::with('postedBy')->where('category', $filter)->latest()->get();
+                    ? \App\Models\Announcement::with('postedBy')->orderBy('is_pinned', 'desc')->orderBy('pinned_at', 'desc')->latest()->get()
+                    : \App\Models\Announcement::with('postedBy')->where('category', $filter)->orderBy('is_pinned', 'desc')->orderBy('pinned_at', 'desc')->latest()->get();
             @endphp
 
             @forelse($announcements as $announcement)
