@@ -1,0 +1,352 @@
+/* ── Profile Content ── */
+.profile-content {
+    max-width: 100%;
+    margin: 0;
+    padding: 40px 32px 60px;
+}
+
+/* ── Two Column Layout ── */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* ── Left Column: Profile Header ── */
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 32px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    position: sticky;
+    top: 72px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: white;
+    font-family: 'Sora', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.profile-info h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.profile-info p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    word-break: break-all;
+}
+
+.profile-role {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+}
+
+/* ── Role Badge Colors ── */
+.profile-role.role-admin   { background: #fff1f2; color: #e11d48; }
+.profile-role.role-teacher { background: #eff6ff; color: #3b82f6; }
+.profile-role.role-student { background: var(--teal-bg); color: var(--teal); }
+
+/* ── Student Info in Header ── */
+.profile-student-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    width: 100%;
+}
+
+.profile-student-info span {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+/* ── Right Column: Sections ── */
+.profile-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ── Profile Card ── */
+.profile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px 32px;
+}
+
+.profile-card--danger {
+    border-color: rgba(225,29,72,0.2);
+}
+
+.profile-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-card-header svg {
+    width: 20px;
+    height: 20px;
+    color: var(--teal);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.profile-card--danger .profile-card-header svg { color: #e11d48; }
+
+.profile-card-header h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+    letter-spacing: -0.3px;
+}
+
+.profile-card-header p {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* ── Form ── */
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--teal);
+    background: var(--surface);
+}
+
+.form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg fill='none' stroke='%238a9399' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+.form-error   { font-size: 12px; color: #e11d48; font-weight: 500; }
+.form-success { font-size: 13px; color: var(--teal); font-weight: 600; }
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 4px;
+}
+
+/* ── Form Row (side by side) ── */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* ── Buttons ── */
+.btn-save {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.btn-save svg   { width: 15px; height: 15px; }
+.btn-save:hover { opacity: 0.85; }
+
+.btn-danger {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    background: #e11d48;
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.btn-danger svg   { width: 15px; height: 15px; }
+.btn-danger:hover { opacity: 0.85; }
+
+.btn-cancel {
+    padding: 9px 20px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+}
+
+.danger-desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 20px;
+}
+
+/* ── Delete Modal ── */
+.delete-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-modal.show { display: flex; }
+
+.delete-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+}
+
+.delete-modal-box {
+    position: relative;
+    z-index: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    max-width: 440px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.delete-modal-box h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+}
+
+.delete-modal-box p {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 20px;
+}
+
+.delete-modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .profile-card           { background: #1f2937; border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .profile-header         { background: #1f2937; border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select      { background: #111827; border-color: rgba(255,255,255,0.08); color: #f9fafb; }
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group select:focus { background: #1f2937; border-color: var(--teal); }
+[data-theme="dark"] .delete-modal-box       { background: #1f2937; border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .profile-card--danger   { border-color: rgba(225,29,72,0.3); }
+[data-theme="dark"] .profile-role.role-admin   { background: #4c0519; color: #fca5a5; }
+[data-theme="dark"] .profile-role.role-teacher { background: #1e3a5f; color: #93c5fd; }
+[data-theme="dark"] .profile-role.role-student { background: #0d2e2b; color: #5eead4; }
+[data-theme="dark"] .form-group select      { color-scheme: dark; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .profile-content  { padding: 24px 16px 40px; }
+    .profile-layout   { grid-template-columns: 1fr; }
+    .profile-header   { position: static; flex-direction: column; }
+    .profile-card     { padding: 20px; }
+    .form-row         { grid-template-columns: 1fr; }
+}
