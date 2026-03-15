@@ -1,0 +1,361 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --teal: #0D9488;
+    --teal-dark: #0f766e;
+    --teal-light: #CCFBF1;
+    --blue: #3B82F6;
+    --blue-light: #DBEAFE;
+    --amber: #F59E0B;
+    --amber-light: #FEF3C7;
+    --bg: #F0F4F3;
+    --surface: #ffffff;
+    --text: #1a1a1a;
+    --muted: #8a9399;
+    --border: rgba(0,0,0,0.07);
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ── Animated Dot Grid ── */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+    animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+    0%   { background-position: 0 0; }
+    100% { background-position: 28px 28px; }
+}
+
+/* ── Floating Color Orbs ── */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    animation: orbFloat 12s ease-in-out infinite alternate;
+}
+
+@keyframes orbFloat {
+    0% {
+        background:
+            radial-gradient(ellipse 600px 400px at 20% 20%, rgba(13,148,136,0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 500px 350px at 80% 80%, rgba(59,130,246,0.06) 0%, transparent 70%),
+            radial-gradient(ellipse 400px 300px at 60% 10%, rgba(245,158,11,0.05) 0%, transparent 70%);
+    }
+    33% {
+        background:
+            radial-gradient(ellipse 600px 400px at 70% 30%, rgba(13,148,136,0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 500px 350px at 20% 70%, rgba(59,130,246,0.06) 0%, transparent 70%),
+            radial-gradient(ellipse 400px 300px at 80% 60%, rgba(245,158,11,0.05) 0%, transparent 70%);
+    }
+    66% {
+        background:
+            radial-gradient(ellipse 600px 400px at 50% 80%, rgba(13,148,136,0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 500px 350px at 90% 20%, rgba(59,130,246,0.06) 0%, transparent 70%),
+            radial-gradient(ellipse 400px 300px at 10% 50%, rgba(245,158,11,0.05) 0%, transparent 70%);
+    }
+    100% {
+        background:
+            radial-gradient(ellipse 600px 400px at 30% 60%, rgba(13,148,136,0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 500px 350px at 60% 40%, rgba(59,130,246,0.06) 0%, transparent 70%),
+            radial-gradient(ellipse 400px 300px at 40% 80%, rgba(245,158,11,0.05) 0%, transparent 70%);
+    }
+}
+
+/* ── Floating Particles ── */
+.particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.particles span {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatUp linear infinite;
+}
+
+.particles span:nth-child(1)  { width: 18px; height: 18px; left: 10%;  background: rgba(13,148,136,0.35);  animation-duration: 8s;  animation-delay: 0s;   }
+.particles span:nth-child(2)  { width: 12px; height: 12px; left: 25%;  background: rgba(59,130,246,0.3);   animation-duration: 11s; animation-delay: 2s;   }
+.particles span:nth-child(3)  { width: 22px; height: 22px; left: 40%;  background: rgba(245,158,11,0.28);  animation-duration: 9s;  animation-delay: 4s;   }
+.particles span:nth-child(4)  { width: 14px; height: 14px; left: 55%;  background: rgba(13,148,136,0.3);   animation-duration: 13s; animation-delay: 1s;   }
+.particles span:nth-child(5)  { width: 10px; height: 10px; left: 70%;  background: rgba(59,130,246,0.35);  animation-duration: 7s;  animation-delay: 3s;   }
+.particles span:nth-child(6)  { width: 20px; height: 20px; left: 80%;  background: rgba(245,158,11,0.3);   animation-duration: 10s; animation-delay: 5s;   }
+.particles span:nth-child(7)  { width: 16px; height: 16px; left: 15%;  background: rgba(13,148,136,0.28);  animation-duration: 12s; animation-delay: 6s;   }
+.particles span:nth-child(8)  { width: 14px; height: 14px; left: 50%;  background: rgba(59,130,246,0.28);  animation-duration: 9s;  animation-delay: 0.5s; }
+.particles span:nth-child(9)  { width: 18px; height: 18px; left: 90%;  background: rgba(245,158,11,0.35);  animation-duration: 11s; animation-delay: 7s;   }
+
+@keyframes floatUp {
+    0%   { bottom: -20px; opacity: 0;   transform: translateX(0) scale(1); }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.6; }
+    100% { bottom: 100vh; opacity: 0;   transform: translateX(40px) scale(0.6); }
+}
+
+.page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    max-width: 1080px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 28px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--text);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-icon svg { color: white; width: 18px; height: 18px; }
+
+.logo-text {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+}
+
+nav a {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--teal);
+    text-decoration: none;
+    padding: 8px 18px;
+    border: 1.5px solid var(--teal);
+    border-radius: 100px;
+    transition: all 0.2s ease;
+}
+
+nav a:hover {
+    background: var(--teal);
+    color: white;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 32px 60px;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 56px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+}
+
+.hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(36px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -1.5px;
+    color: var(--text);
+    margin-bottom: 14px;
+}
+
+.hero h1 span { color: var(--teal); }
+
+.hero p {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: -0.2px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 36px 32px 32px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.card:nth-child(1) { animation: fadeUp 0.6s ease 0.15s forwards; }
+.card:nth-child(2) { animation: fadeUp 0.6s ease 0.25s forwards; }
+.card:nth-child(3) { animation: fadeUp 0.6s ease 0.35s forwards; }
+
+.card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card--admin::after   { background: linear-gradient(135deg, rgba(13,148,136,0.04) 0%, transparent 60%); }
+.card--teacher::after { background: linear-gradient(135deg, rgba(59,130,246,0.04) 0%, transparent 60%); }
+.card--student::after { background: linear-gradient(135deg, rgba(245,158,11,0.04) 0%, transparent 60%); }
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+}
+
+.card:hover::after { opacity: 1; }
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    flex-shrink: 0;
+}
+
+.card--admin .card-icon {
+    background: var(--teal-light);
+    color: var(--teal);
+    border: 1px solid rgba(13,148,136,0.2);
+}
+
+.card--teacher .card-icon {
+    background: var(--blue-light);
+    color: var(--blue);
+    border: 1px solid rgba(59,130,246,0.2);
+}
+
+.card--student .card-icon {
+    background: var(--amber-light);
+    color: var(--amber);
+    border: 1px solid rgba(245,158,11,0.2);
+}
+
+.card-icon svg { width: 22px; height: 22px; }
+
+.card h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.4px;
+}
+
+.card p {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    font-weight: 500;
+    flex: 1;
+}
+
+.card-enter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 20px;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.card:hover .card-enter {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.card--admin .card-enter   { color: var(--teal); }
+.card--teacher .card-enter { color: var(--blue); }
+.card--student .card-enter { color: var(--amber); }
+
+.card-enter .arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+.card:hover .arrow { transform: translateX(4px); }
+
+.footer-note {
+    margin-top: 44px;
+    font-size: 12.5px;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.5s forwards;
+}
+
+@keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0) translateX(0); }
+}
+
+@media (max-width: 768px) {
+    .cards  { grid-template-columns: 1fr; max-width: 400px; }
+    header  { padding: 20px 20px; }
+    main    { padding: 10px 20px 50px; }
+}

@@ -32,6 +32,13 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        // Save student-specific fields
+        if ($request->user()->role === 'student') {
+            $request->user()->course     = $request->input('course');
+            $request->user()->year_level = $request->input('year_level');
+            $request->user()->section    = $request->input('section');
+        }
+
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
