@@ -29,6 +29,8 @@ Route::post('/teacher/register', [RegisteredUserController::class, 'storeTeacher
     ->name('teacher.register.store');
 
 Route::middleware('auth')->group(function () {
+
+    // ── Profile ──
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -44,10 +46,39 @@ Route::middleware('auth')->group(function () {
     })->name('teacher.dashboard');
 
     // ── Admin Routes ──
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::prefix('admin')->name('admin.')->group(function () {
 
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+
+        Route::get('/announcements', function () {
+            return view('admin.announcements');
+        })->name('announcements');
+
+        Route::get('/categories', function () {
+            return view('admin.categories');
+        })->name('categories');
+
+        Route::get('/users', function () {
+            return view('admin.users');
+        })->name('users');
+
+        Route::get('/templates', function () {
+            return view('admin.templates');
+        })->name('templates');
+
+        Route::get('/subscription', function () {
+            return view('admin.subscription');
+        })->name('subscription');
+
+        Route::get('/settings', function () {
+            return view('admin.settings');
+        })->name('settings');
+
+    });
+
+    // ── Legacy / Shared Routes ──
     Route::get('/announcements', function () {
         return view('announcements');
     })->name('announcements');
@@ -67,6 +98,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', function () {
         return view('settings');
     })->name('settings');
+
 });
+
+// ── Subscription Plans (public) ──
+Route::get('/plans', function () {
+    return view('subscription.plans');
+})->name('plans');
 
 require __DIR__.'/auth.php';

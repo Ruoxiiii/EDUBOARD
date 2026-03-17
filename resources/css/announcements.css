@@ -207,18 +207,42 @@ body {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    border: 1.5px solid transparent;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'Sora', sans-serif;
     transition: all 0.2s ease;
 }
 
-.pill.all.active      { background: var(--teal); color: white; border-color: var(--teal); }
-.pill.academic        { background: #eff6ff; color: #3b82f6; border-color: #bfdbfe; }
-.pill.events          { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
-.pill.administrative  { background: #fffbeb; color: #d97706; border-color: #fde68a; }
-.pill.student-affairs { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
-.pill.emergency       { background: #fff1f2; color: #e11d48; border-color: #fecdd3; }
-.pill.general         { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
-.pill:hover { opacity: 0.8; }
+.pill:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+}
+
+.pill.all.active      { background: var(--teal); border-color: var(--teal); color: white; }
+.pill.academic.active { background: var(--teal); border-color: var(--teal); color: white; }
+.pill.events.active   { background: var(--teal); border-color: var(--teal); color: white; }
+.pill.administrative.active  { background: var(--teal); border-color: var(--teal); color: white; }
+.pill.student-affairs.active { background: var(--teal); border-color: var(--teal); color: white; }
+.pill.emergency.active { background: var(--teal); border-color: var(--teal); color: white; }
+.pill.general.active   { background: var(--teal); border-color: var(--teal); color: white; }
+
+[data-theme="dark"] .pill:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+}
+
+[data-theme="dark"] .pill.all.active,
+[data-theme="dark"] .pill.academic.active,
+[data-theme="dark"] .pill.events.active,
+[data-theme="dark"] .pill.administrative.active,
+[data-theme="dark"] .pill.student-affairs.active,
+[data-theme="dark"] .pill.emergency.active,
+[data-theme="dark"] .pill.general.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+}
 
 /* ── Announcement Cards ── */
 .announcements { display: flex; flex-direction: column; gap: 16px; }
