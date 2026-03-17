@@ -950,7 +950,7 @@ body {
 .gallery-item .ann-image,
 .gallery-item .ann-video {
     width: 100%;
-    height: 280px;
+    height: 440px;
     object-fit: cover;
     border-radius: 0;
     margin-bottom: 0;
