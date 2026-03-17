@@ -36,8 +36,6 @@ Route::post('/teacher/register', [RegisteredUserController::class, 'storeTeacher
     ->name('teacher.register.store');
 
 Route::middleware('auth')->group(function () {
-
-    // ── Profile ──
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -170,34 +168,31 @@ Route::middleware('auth')->group(function () {
     });
 
     // ── Admin Routes ──
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
 
-    Route::get('/announcements', function () {
-        return view('announcements');
-    })->name('announcements');
+        Route::get('announcements', function () {
+            return view('announcements');
+        })->name('announcements');
 
-        Route::get('/user-management', function () {
+        Route::get('user-management', function () {
             return view('user-management');
         })->name('user.management');
 
-        Route::get('/categories', function () {
+        Route::get('categories', function () {
             return view('categories');
         })->name('categories');
 
-        Route::get('/subscriptions', function () {
+        Route::get('subscriptions', function () {
             return view('subscriptions');
         })->name('subscriptions');
 
-    Route::get('/settings', function () {
-        return view('settings');
-    })->name('settings');
+        Route::get('settings', function () {
+            return view('settings');
+        })->name('settings');
+    });
 });
-
-// ── Subscription Plans (public) ──
-Route::get('/plans', function () {
-    return view('subscription.plans');
-})->name('plans');
 
 require __DIR__.'/auth.php';
