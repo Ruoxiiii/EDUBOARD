@@ -1,4 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ── Success Modal ──
+    const successModal = document.getElementById('successModal');
+    const successModalOverlay = document.getElementById('successModalOverlay');
+    const closeSuccessModalBtn = document.getElementById('closeSuccessModalBtn');
+    const successModalMessage = document.getElementById('successModalMessage');
+    const successModalIcon = document.getElementById('successModalIcon');
+
+    function showSuccess(msg) {
+        if (successModalMessage) successModalMessage.textContent = msg;
+        if (successModalIcon) {
+            successModalIcon.innerHTML = `
+                <svg class="animated-check" viewBox="0 0 52 52">
+                    <circle class="animated-check-circle" cx="26" cy="26" r="25" fill="none" />
+                    <path class="animated-check-path" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+            `;
+            successModalIcon.style.display = 'block';
+        }
+        if (successModal) successModal.classList.add('show');
+    }
+
+    function closeSuccessModal() {
+        if (successModal) successModal.classList.remove('show');
+    }
+
+    if (closeSuccessModalBtn) closeSuccessModalBtn.addEventListener('click', closeSuccessModal);
+    if (successModalOverlay) successModalOverlay.addEventListener('click', closeSuccessModal);
+    const closeSuccessModalTop = document.getElementById('closeSuccessModalTop');
+    if (closeSuccessModalTop) closeSuccessModalTop.addEventListener('click', closeSuccessModal);
+
     // ── New Template Modal ──
     const templateModal        = document.getElementById('templateModal');
     const addTemplateBtn       = document.getElementById('addTemplateBtn');
@@ -63,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tagEl = editingTemplateCard.querySelector('.tag');
                 tagEl.className   = `tag ${category}`;
                 tagEl.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                showSuccess('Template updated successfully');
             } else {
                 const card = document.createElement('div');
                 card.classList.add('template-card');
@@ -97,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 document.getElementById('templatesGrid').appendChild(card);
                 attachCardEvents(card);
+                showSuccess('Template added successfully');
             }
             closeTemplate();
         });
@@ -139,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         useTemplateForm.addEventListener('submit', e => {
             e.preventDefault();
             closeUseModal();
+            showSuccess('Announcement published using template');
             // TODO: redirect to announcements page with pre-filled data
         });
     }
@@ -170,9 +203,18 @@ document.addEventListener('DOMContentLoaded', () => {
         deleteTemplateOverlay.addEventListener('click', closeDeleteModal);
     }
 
+    const closeDeleteTemplateModal = document.getElementById('closeDeleteTemplateModal');
+    if (closeDeleteTemplateModal) {
+        closeDeleteTemplateModal.addEventListener('click', closeDeleteModal);
+    }
+
     if (confirmDeleteTemplateBtn) {
         confirmDeleteTemplateBtn.addEventListener('click', () => {
-            if (cardToDelete) { cardToDelete.remove(); cardToDelete = null; }
+            if (cardToDelete) { 
+                cardToDelete.remove(); 
+                cardToDelete = null; 
+                showSuccess('Template deleted successfully');
+            }
             closeDeleteModal();
         });
     }

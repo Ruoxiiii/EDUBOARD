@@ -11,7 +11,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-    @vite(['resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js', 'resources/js/categories.js'])
+    @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js', 'resources/js/categories.js'])
 </head>
 <body>
 
@@ -185,10 +185,10 @@
     </div>
 </div>
 
-{{-- Delete Confirm Modal --}}
+{{-- Delete Confirmation Modal --}}
 <div class="admin-modal" id="deleteCategoryModal">
     <div class="admin-modal-overlay" id="deleteCategoryOverlay"></div>
-    <div class="admin-modal-box" style="max-width: 400px;">
+    <div class="admin-modal-box" style="max-width:400px;">
         <div class="admin-modal-header">
             <h3>Delete Category</h3>
             <button class="admin-modal-close" id="closeDeleteCategoryModal">
@@ -198,8 +198,8 @@
             </button>
         </div>
         <div class="admin-modal-form">
-            <p style="font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 8px;">
-                Are you sure you want to delete <strong id="deleteCategoryName" style="color: var(--text);"></strong>? This action cannot be undone.
+            <p style="font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:8px;">
+                Are you sure you want to delete <strong id="deleteCategoryName" style="color:var(--text);"></strong>? This action cannot be undone.
             </p>
             <div class="admin-modal-actions">
                 <button type="button" class="btn-cancel" id="cancelDeleteCategoryBtn">Cancel</button>
@@ -209,6 +209,35 @@
                     </svg>
                     Delete
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Success Modal --}}
+<div class="admin-modal" id="successModal">
+    <div class="admin-modal-overlay" id="successModalOverlay"></div>
+    <div class="admin-modal-box" style="max-width:400px;">
+        <div class="admin-modal-header">
+            <h3>Success</h3>
+            <button class="admin-modal-close" id="closeSuccessModalTop">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="admin-modal-form">
+            <div id="successModalIcon" style="text-align:center; display:none;">
+                <svg class="animated-check" viewBox="0 0 52 52">
+                    <circle class="animated-check-circle" cx="26" cy="26" r="25" fill="none" />
+                    <path class="animated-check-path" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+            </div>
+            <p id="successModalMessage" style="font-size:14px; color:var(--muted); text-align:center; line-height:1.6; margin-bottom:8px;">
+                Action completed successfully.
+            </p>
+            <div class="admin-modal-actions">
+                <button type="button" class="btn-save" id="closeSuccessModalBtn">Done</button>
             </div>
         </div>
     </div>

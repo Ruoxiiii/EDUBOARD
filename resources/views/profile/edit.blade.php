@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     @if(auth()->user()->role === 'admin')
-        @vite(['resources/css/admin.css', 'resources/css/profile.css', 'resources/js/app.js', 'resources/js/admin.js', 'resources/js/profile.js'])
+        @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/css/profile.css', 'resources/js/app.js', 'resources/js/admin.js', 'resources/js/profile.js'])
     @else
         @vite(['resources/css/announcements.css', 'resources/css/profile.css', 'resources/js/app.js', 'resources/js/navbar.js', 'resources/js/theme.js', 'resources/js/profile.js'])
     @endif

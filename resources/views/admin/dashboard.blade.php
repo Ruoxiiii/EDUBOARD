@@ -11,7 +11,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-    @vite(['resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js'])
+    @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js'])
 </head>
 <body>
 
@@ -72,162 +72,131 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <a href="{{ route('admin.users') }}?tab=pending" class="stat-card hover:border-red-400 transition-colors">
                     <div class="stat-info">
-                        <div class="stat-label">Engagement Rate</div>
-                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Pending Approvals</div>
+                        <div class="stat-value text-red-500">2</div>
                     </div>
-                    <div class="stat-icon green">
+                    <div class="stat-icon red" style="background: #fef2f2; color: #ef4444;">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                         </svg>
                     </div>
-                </div>
+                </a>
             </div>
 
-            {{-- Recent Announcements --}}
-            <div class="section-header">
-                <h2>Recent Announcements</h2>
-                <a href="{{ route('admin.announcements') }}" class="section-link">View all →</a>
-            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+                {{-- Left: Recent Announcements --}}
+                <div class="lg:col-span-2">
+                    <div class="section-header">
+                        <h2>Recent Announcements</h2>
+                        <a href="{{ route('admin.announcements') }}" class="view-all">View All</a>
+                    </div>
 
-            <div class="announcements">
-                <div class="ann-card" id="ann-card-1">
-                    <div class="ann-meta-top">
-                        <span class="pinned-label">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
-                            </svg>
-                            Pinned
-                        </span>
-                        <span class="tag emergency">Emergency</span>
-                    </div>
-                    <div class="ann-title">Classes Suspended on March 10</div>
-                    <div class="ann-author">
-                        <span>
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
-                            </svg>
-                            Dr. Santos
-                        </span>
-                        <span>
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                            </svg>
-                            2026-03-08
-                        </span>
-                    </div>
-                    <div class="ann-body">Due to inclement weather, all classes are suspended on March 10, 2026. Please stay safe and monitor official channels for updates.</div>
-                </div>
+                    <div class="space-y-4">
+                        {{-- Card 1 --}}
+                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-all">
+                            <div class="flex items-start justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 overflow-hidden flex items-center justify-center text-red-600 dark:text-red-400 font-bold">
+                                        AS
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Admin System</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">2026-03-10 · Emergency</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold uppercase rounded-md tracking-wider">Pinned</span>
+                            </div>
+                            <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">Classes Suspended on March 10</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Due to inclement weather, all classes are suspended on March 10, 2026. Please stay safe and monitor official channels for updates.</p>
+                        </div>
 
-                <div class="ann-card" id="ann-card-2">
-                    <div class="ann-meta-top">
-                        <span class="pinned-label">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
-                            </svg>
-                            Pinned
-                        </span>
-                        <span class="tag events">Events</span>
-                    </div>
-                    <div class="ann-title">Foundation Day Celebration</div>
-                    <div class="ann-author">
-                        <span>
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
-                            </svg>
-                            Events Committee
-                        </span>
-                        <span>
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                            </svg>
-                            2026-03-07
-                        </span>
-                    </div>
-                    <div class="ann-body">Join us for the 50th Foundation Day celebration on March 15! Activities include a parade, cultural performances, and a grand alumni homecoming.</div>
-
-                    {{-- Media Gallery --}}
-                    <div class="ann-gallery" data-total="4">
-                        <div class="gallery-track">
-                            <div class="gallery-item">
-                                <img src="{{ asset('images/download.jpg') }}" alt="Foundation Day 1" class="ann-image">
+                        {{-- Card 2 --}}
+                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-all">
+                            <div class="flex items-start justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 overflow-hidden flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                                        EC
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Events Committee</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">2026-03-07 · Events</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 text-[10px] font-bold uppercase rounded-md tracking-wider">Pinned</span>
                             </div>
-                            <div class="gallery-item">
-                                <img src="{{ asset('images/download.jpg') }}" alt="Foundation Day 2" class="ann-image">
-                            </div>
-                            <div class="gallery-item">
-                                <img src="{{ asset('images/download.jpg') }}" alt="Foundation Day 3" class="ann-image">
-                            </div>
-                            <div class="gallery-item">
-                                <img src="{{ asset('images/download.jpg') }}" alt="Foundation Day 4" class="ann-image">
+                            <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">Foundation Day Celebration</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4">Join us for the 50th Foundation Day celebration on March 15! Activities include a parade, cultural performances, and a grand alumni homecoming.</p>
+                            
+                            {{-- Photo Display --}}
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
+                                    <img src="{{ asset('images/download.jpg') }}" alt="Foundation Day 1" class="w-full h-full object-cover">
+                                </div>
+                                <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
+                                    <img src="{{ asset('images/download.jpg') }}" alt="Foundation Day 2" class="w-full h-full object-cover">
+                                </div>
                             </div>
                         </div>
-                        <button class="gallery-btn gallery-prev" aria-label="Previous">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                            </svg>
-                        </button>
-                        <button class="gallery-btn gallery-next" aria-label="Next">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                            </svg>
-                        </button>
-                        <div class="gallery-counter">1 / 4</div>
                     </div>
                 </div>
 
-                <div class="ann-card" id="ann-card-3">
-                    <div class="ann-meta-top">
-                        <span class="tag events">Events</span>
+                {{-- Right: Pending Approvals Reference --}}
+                <div class="lg:col-span-1">
+                    <div class="section-header">
+                        <h2>Pending Approvals</h2>
+                        <a href="{{ route('admin.users') }}?tab=pending" class="view-all">Manage</a>
                     </div>
-                    <div class="ann-title">Foundation Day Highlights Video</div>
-                    <div class="ann-author">
-                        <span>
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
-                            </svg>
-                            Events Committee
-                        </span>
-                        <span>
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                            </svg>
-                            2026-03-14
-                        </span>
-                    </div>
-                    <div class="ann-body">Watch the highlights from this year's Foundation Day celebration. Relive the parade, performances, and memorable moments from the event.</div>
-
-                    {{-- Mixed Media Gallery --}}
-                    <div class="ann-gallery" data-total="2">
-                        <div class="gallery-track">
-                            <div class="gallery-item">
-                                <video class="ann-video ann-image" preload="metadata">
-                                    <source src="{{ asset('video/simple.mp4') }}" type="video/mp4">
-                                </video>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                        <div class="divide-y divide-gray-100 dark:divide-gray-700">
+                            {{-- Pending User 1 --}}
+                            <div class="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-xs">
+                                        KP
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Kevin Park</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">COT · BSIT</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-[10px] font-medium rounded-full border border-amber-100 dark:border-amber-900/30">Pending</span>
                             </div>
-                            <div class="gallery-item">
-                                <img src="{{ asset('images/download.jpg') }}" alt="Event Photo" class="ann-image">
+
+                            {{-- Pending User 2 --}}
+                            <div class="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-xs">
+                                        SC
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Sarah Chen</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">COB · BSBA</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-[10px] font-medium rounded-full border border-amber-100 dark:border-amber-900/30">Pending</span>
                             </div>
                         </div>
-                        <button class="gallery-btn gallery-prev" aria-label="Previous">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        
+                        <a href="{{ route('admin.users') }}?tab=pending" class="block p-3 text-center text-xs font-medium text-blue-600 dark:text-blue-400 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            View All Pending Requests
+                        </a>
+                    </div>
+
+                    {{-- Quick Tip --}}
+                    <div class="mt-4 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30">
+                        <div class="flex gap-3">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                        </button>
-                        <button class="gallery-btn gallery-next" aria-label="Next">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                            </svg>
-                        </button>
-                        <div class="gallery-counter">1 / 2</div>
+                            <p class="text-[12px] text-blue-700 dark:text-blue-300 leading-relaxed">
+                                New student registrations require admin approval before they can access their portal.
+                            </p>
+                        </div>
                     </div>
                 </div>
-
-
-
-
-
             </div>
 
         </div>

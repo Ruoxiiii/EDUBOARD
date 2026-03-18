@@ -11,7 +11,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-    @vite(['resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js', 'resources/js/users.js'])
+    @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js', 'resources/js/users.js'])
 </head>
 <body>
 
@@ -39,6 +39,7 @@
             <div class="user-tabs">
                 <button class="user-tab active" data-tab="teachers">Teachers <span class="user-tab-count">5</span></button>
                 <button class="user-tab" data-tab="students">Students <span class="user-tab-count">5</span></button>
+                <button class="user-tab" data-tab="pending">Pending Approval <span class="user-tab-count pending">2</span></button>
             </div>
 
             {{-- Filters --}}
@@ -93,7 +94,7 @@
 
                         {{-- ── Teachers ── --}}
                         <tr data-role="teachers" data-dept="COT" data-course="BSIT">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm">PR</div>Prof. Reyes</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm"><img src="{{ asset('images/download.jpg') }}" alt="Prof. Reyes"></div>Prof. Reyes</div></td>
                             <td class="text-muted">reyes@westfield.edu</td>
                             <td>COT</td>
                             <td>BSIT</td>
@@ -106,7 +107,7 @@
                         </tr>
 
                         <tr data-role="teachers" data-dept="COT" data-course="BSCS">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm">PG</div>Prof. Garcia</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm"><img src="{{ asset('images/download.jpg') }}" alt="Prof. Garcia"></div>Prof. Garcia</div></td>
                             <td class="text-muted">garcia@westfield.edu</td>
                             <td>COT</td>
                             <td>BSCS</td>
@@ -119,7 +120,7 @@
                         </tr>
 
                         <tr data-role="teachers" data-dept="COB" data-course="BSBA">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm">PC</div>Prof. Cruz</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm"><img src="{{ asset('images/download.jpg') }}" alt="Prof. Cruz"></div>Prof. Cruz</div></td>
                             <td class="text-muted">cruz@westfield.edu</td>
                             <td>COB</td>
                             <td>BSBA</td>
@@ -132,7 +133,7 @@
                         </tr>
 
                         <tr data-role="teachers" data-dept="CON" data-course="BSN">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm">PL</div>Prof. Lim</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm"><img src="{{ asset('images/download.jpg') }}" alt="Prof. Lim"></div>Prof. Lim</div></td>
                             <td class="text-muted">lim@westfield.edu</td>
                             <td>CON</td>
                             <td>BSN</td>
@@ -145,7 +146,7 @@
                         </tr>
 
                         <tr data-role="teachers" data-dept="COE" data-course="BSEd">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm">PT</div>Prof. Torres</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm"><img src="{{ asset('images/download.jpg') }}" alt="Prof. Torres"></div>Prof. Torres</div></td>
                             <td class="text-muted">torres@westfield.edu</td>
                             <td>COE</td>
                             <td>BSEd</td>
@@ -159,7 +160,7 @@
 
                         {{-- ── Students ── --}}
                         <tr data-role="students" data-dept="COT" data-course="BSIT" style="display:none;">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;">JD</div>Juan Dela Cruz</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;"><img src="{{ asset('images/download.jpg') }}" alt="Juan Dela Cruz"></div>Juan Dela Cruz</div></td>
                             <td class="text-muted">juan@westfield.edu</td>
                             <td>COT</td>
                             <td>BSIT</td>
@@ -172,7 +173,7 @@
                         </tr>
 
                         <tr data-role="students" data-dept="COT" data-course="BSCS" style="display:none;">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;">MS</div>Maria Santos</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;"><img src="{{ asset('images/download.jpg') }}" alt="Maria Santos"></div>Maria Santos</div></td>
                             <td class="text-muted">maria@westfield.edu</td>
                             <td>COT</td>
                             <td>BSCS</td>
@@ -185,7 +186,7 @@
                         </tr>
 
                         <tr data-role="students" data-dept="COB" data-course="BSBA" style="display:none;">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;">AL</div>Ana Lopez</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;"><img src="{{ asset('images/download.jpg') }}" alt="Ana Lopez"></div>Ana Lopez</div></td>
                             <td class="text-muted">ana@westfield.edu</td>
                             <td>COB</td>
                             <td>BSBA</td>
@@ -198,7 +199,7 @@
                         </tr>
 
                         <tr data-role="students" data-dept="CON" data-course="BSN" style="display:none;">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;">RM</div>Rico Mendoza</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;"><img src="{{ asset('images/download.jpg') }}" alt="Rico Mendoza"></div>Rico Mendoza</div></td>
                             <td class="text-muted">rico@westfield.edu</td>
                             <td>CON</td>
                             <td>BSN</td>
@@ -211,7 +212,7 @@
                         </tr>
 
                         <tr data-role="students" data-dept="COE" data-course="BSEd" style="display:none;">
-                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;">LR</div>Lisa Reyes</div></td>
+                            <td><div class="user-name-cell"><div class="user-avatar-sm" style="background:#3b82f6;"><img src="{{ asset('images/download.jpg') }}" alt="Lisa Reyes"></div>Lisa Reyes</div></td>
                             <td class="text-muted">lisa@westfield.edu</td>
                             <td>COE</td>
                             <td>BSEd</td>
@@ -220,6 +221,41 @@
                             <td><div class="user-row-actions">
                                 <button class="ann-action-btn edit" title="Edit"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" /></svg></button>
                                 <button class="ann-action-btn delete" title="Delete"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button>
+                            </div></td>
+                        </tr>
+
+                        {{-- ── Pending Approvals ── --}}
+                        <tr data-role="pending" style="display:none;">
+                            <td><div class="user-name-cell"><div class="user-avatar-sm"><img src="{{ asset('images/download.jpg') }}" alt="Kevin Park"></div>Kevin Park</div></td>
+                            <td class="text-muted">kevin.park@example.com</td>
+                            <td>COT</td>
+                            <td>BSIT</td>
+                            <td class="cell-section">N/A</td>
+                            <td><span class="status-badge warning">Pending</span></td>
+                            <td><div class="user-row-actions">
+                                <button class="ann-action-btn edit approve-user-btn" title="Approve" style="color:#22c55e;">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                </button>
+                                <button class="ann-action-btn delete reject-user-btn" title="Reject">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </div></td>
+                        </tr>
+
+                        <tr data-role="pending" style="display:none;">
+                            <td><div class="user-name-cell"><div class="user-avatar-sm"><img src="{{ asset('images/download.jpg') }}" alt="Sarah Chen"></div>Sarah Chen</div></td>
+                            <td class="text-muted">sarah.c@example.com</td>
+                            <td>COB</td>
+                            <td>BSBA</td>
+                            <td class="cell-section">N/A</td>
+                            <td><span class="status-badge warning">Pending</span></td>
+                            <td><div class="user-row-actions">
+                                <button class="ann-action-btn edit approve-user-btn" title="Approve" style="color:#22c55e;">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                </button>
+                                <button class="ann-action-btn delete reject-user-btn" title="Reject">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
                             </div></td>
                         </tr>
 
@@ -307,6 +343,64 @@
                 <button type="submit" class="btn-save" id="saveUserBtn">Save</button>
             </div>
         </form>
+    </div>
+</div>
+
+{{-- Delete Confirmation Modal --}}
+<div class="admin-modal" id="deleteUserModal">
+    <div class="admin-modal-overlay" id="deleteUserModalOverlay"></div>
+    <div class="admin-modal-box" style="max-width:400px;">
+        <div class="admin-modal-header">
+            <h3>Delete User</h3>
+            <button class="admin-modal-close" id="closeDeleteUserModal">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="admin-modal-form">
+            <p style="font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:8px;">
+                Are you sure you want to delete this user account? This action cannot be undone.
+            </p>
+            <div class="admin-modal-actions">
+                <button type="button" class="btn-cancel" id="cancelDeleteUserBtn">Cancel</button>
+                <button type="button" class="btn-danger" id="confirmDeleteUserBtn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Success Modal --}}
+<div class="admin-modal" id="successModal">
+    <div class="admin-modal-overlay" id="successModalOverlay"></div>
+    <div class="admin-modal-box" style="max-width:400px;">
+        <div class="admin-modal-header">
+            <h3>Success</h3>
+            <button class="admin-modal-close" id="closeSuccessModalTop">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="admin-modal-form">
+            <div id="successModalIcon" style="text-align:center; display:none;">
+                <svg class="animated-check" viewBox="0 0 52 52">
+                    <circle class="animated-check-circle" cx="26" cy="26" r="25" fill="none" />
+                    <path class="animated-check-path" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+            </div>
+            <p id="successModalMessage" style="font-size:14px; color:var(--muted); text-align:center; line-height:1.6; margin-bottom:8px;">
+                Action completed successfully.
+            </p>
+            <div class="admin-modal-actions">
+                <button type="button" class="btn-save" id="closeSuccessModalBtn">Done</button>
+            </div>
+        </div>
     </div>
 </div>
 

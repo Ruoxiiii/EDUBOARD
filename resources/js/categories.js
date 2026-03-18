@@ -1,4 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ── Success Modal ──
+    const successModal = document.getElementById('successModal');
+    const successModalOverlay = document.getElementById('successModalOverlay');
+    const closeSuccessModalBtn = document.getElementById('closeSuccessModalBtn');
+    const successModalMessage = document.getElementById('successModalMessage');
+    const successModalIcon = document.getElementById('successModalIcon');
+
+    function showSuccess(msg) {
+        if (successModalMessage) successModalMessage.textContent = msg;
+        if (successModalIcon) {
+            successModalIcon.innerHTML = `
+                <svg class="animated-check" viewBox="0 0 52 52">
+                    <circle class="animated-check-circle" cx="26" cy="26" r="25" fill="none" />
+                    <path class="animated-check-path" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+            `;
+            successModalIcon.style.display = 'block';
+        }
+        if (successModal) successModal.classList.add('show');
+    }
+
+    function closeSuccessModal() {
+        if (successModal) successModal.classList.remove('show');
+    }
+
+    if (closeSuccessModalBtn) closeSuccessModalBtn.addEventListener('click', closeSuccessModal);
+    if (successModalOverlay) successModalOverlay.addEventListener('click', closeSuccessModal);
+    const closeSuccessModalTop = document.getElementById('closeSuccessModalTop');
+    if (closeSuccessModalTop) closeSuccessModalTop.addEventListener('click', closeSuccessModal);
+
     // ── Add Category Modal ──
     const categoryModal        = document.getElementById('categoryModal');
     const addCategoryBtn       = document.getElementById('addCategoryBtn');
@@ -55,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tagEl.textContent = name;
                 tagEl.className   = `tag ${color}`;
                 editingCard.dataset.name = name;
+                showSuccess('Category updated successfully');
             } else {
                 // Add new card
                 const card = document.createElement('div');
@@ -77,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 document.getElementById('categoriesGrid').appendChild(card);
                 attachCardEvents(card);
+                showSuccess('Category added successfully');
             }
 
             closeModal();
@@ -107,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Delete Modal ──
     const deleteCategoryModal   = document.getElementById('deleteCategoryModal');
     const deleteCategoryOverlay = document.getElementById('deleteCategoryOverlay');
-    const closeDeleteCategoryModal   = document.getElementById('closeDeleteCategoryModal');
     const cancelDeleteCategoryBtn    = document.getElementById('cancelDeleteCategoryBtn');
     const confirmDeleteCategoryBtn   = document.getElementById('confirmDeleteCategoryBtn');
     let cardToDelete = null;
@@ -115,10 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeDeleteModal() {
         deleteCategoryModal.classList.remove('show');
         cardToDelete = null;
-    }
-
-    if (closeDeleteCategoryModal) {
-        closeDeleteCategoryModal.addEventListener('click', closeDeleteModal);
     }
 
     if (cancelDeleteCategoryBtn) {
@@ -129,11 +156,17 @@ document.addEventListener('DOMContentLoaded', () => {
         deleteCategoryOverlay.addEventListener('click', closeDeleteModal);
     }
 
+    const closeDeleteCategoryModal = document.getElementById('closeDeleteCategoryModal');
+    if (closeDeleteCategoryModal) {
+        closeDeleteCategoryModal.addEventListener('click', closeDeleteModal);
+    }
+
     if (confirmDeleteCategoryBtn) {
         confirmDeleteCategoryBtn.addEventListener('click', () => {
             if (cardToDelete) {
                 cardToDelete.remove();
                 cardToDelete = null;
+                showSuccess('Category deleted successfully');
             }
             closeDeleteModal();
         });

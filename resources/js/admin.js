@@ -14,11 +14,37 @@ window.addEventListener('load', () => {
     }
 });
 
-// ── Theme Toggle ──
+// ── Theme Management ──
 const themeBtn = document.getElementById('themeBtn');
 const html = document.documentElement;
 
+function applySavedTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedPrimary = localStorage.getItem('customPrimary');
+    const savedTopbar = localStorage.getItem('customTopbar');
+    const savedSidebar = localStorage.getItem('customSidebar');
+    const savedSidebarText = localStorage.getItem('customSidebarText');
+    const savedSidebarActive = localStorage.getItem('customSidebarActive');
+
+    if (savedTheme === 'system') {
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    } else if (savedTheme === 'custom') {
+        html.setAttribute('data-theme', 'light');
+        if (savedPrimary) html.style.setProperty('--teal', savedPrimary);
+        if (savedTopbar) html.style.setProperty('--topbar-bg', savedTopbar);
+        if (savedSidebar) html.style.setProperty('--sidebar-bg', savedSidebar);
+        if (savedSidebarText) html.style.setProperty('--sidebar-text', savedSidebarText);
+        if (savedSidebarActive) html.style.setProperty('--sidebar-active', savedSidebarActive);
+    } else {
+        html.setAttribute('data-theme', savedTheme);
+    }
+    
+    if (themeBtn) updateThemeIcon(html.getAttribute('data-theme') === 'dark');
+}
+
 function updateThemeIcon(isDark) {
+    if (!themeBtn) return;
     themeBtn.innerHTML = isDark
         ? `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
@@ -28,22 +54,24 @@ function updateThemeIcon(isDark) {
            </svg>`;
 }
 
-if (localStorage.getItem('theme') === 'dark') {
-    updateThemeIcon(true);
-}
+// Initialize theme on load
+applySavedTheme();
 
-themeBtn.addEventListener('click', () => {
-    const isDark = html.getAttribute('data-theme') === 'dark';
-    if (isDark) {
-        html.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
-        updateThemeIcon(false);
-    } else {
-        html.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-        updateThemeIcon(true);
-    }
-});
+if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        let nextTheme = 'dark';
+        
+        if (currentTheme === 'dark') nextTheme = 'light';
+        else if (currentTheme === 'light') nextTheme = 'dark';
+        else nextTheme = 'dark'; // Fallback for custom/system
+
+        localStorage.setItem('theme', nextTheme);
+        html.style.removeProperty('--teal');
+        html.style.removeProperty('--sidebar-bg');
+        applySavedTheme();
+    });
+}
 
 // ── Notifications Dropdown ──
 const notifBtn = document.getElementById('notifBtn');

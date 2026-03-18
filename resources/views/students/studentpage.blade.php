@@ -12,7 +12,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-    @vite(['resources/css/announcements.css', 'resources/js/app.js', 'resources/js/navbar.js', 'resources/js/studentpage.js', 'resources/js/theme.js', 'resources/js/datefilter.js'])
+    @vite(['resources/css/app.css', 'resources/css/announcements.css', 'resources/js/app.js', 'resources/js/navbar.js', 'resources/js/studentpage.js', 'resources/js/theme.js', 'resources/js/datefilter.js'])
 </head>
 <body>
 
@@ -64,7 +64,46 @@
         </div>
 
         {{-- Announcement Cards --}}
-        <div class="announcements">
+        <div class="space-y-4">
+            
+            {{-- ── EXAMPLE ANNOUNCEMENT WITH ADMIN/TEACHER DESIGN ── --}}
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-all" data-category="events">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 overflow-hidden flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                            SA
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">System Admin</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ now()->format('M d, Y') }} · Events</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase rounded-md tracking-wider">Pinned</span>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">Welcome to Westfield Academy: Highlights & Resources</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                    Welcome students! Check out our campus highlights and official logo. We are excited to have you here at Westfield Academy. Watch the video below to see our latest events!
+                </p>
+
+                {{-- Photo Display (Grid Layout like Admin/Teacher) --}}
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
+                        <img src="{{ asset('images/Logo.jpg') }}" alt="Westfield Logo" class="w-full h-full object-cover">
+                    </div>
+                    <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
+                        <video class="w-full h-full object-cover" controls preload="metadata">
+                            <source src="{{ asset('video/simple.mp4') }}" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 mt-4">
+                    <button class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">❤️ 12</button>
+                    <button class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">👍 8</button>
+                    <button class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">🔥 5</button>
+                </div>
+            </div>
+
             @php
                 $announcements = \App\Models\Announcement::with('postedBy')->orderBy('is_pinned', 'desc')->orderBy('pinned_at', 'desc')->latest()->get();
             @endphp
@@ -73,84 +112,80 @@
                 @php
                     $mediaPaths = is_array($announcement->media_paths) ? $announcement->media_paths : json_decode($announcement->media_paths ?? '[]', true) ?? [];
                     $mediaCount = count($mediaPaths);
+                    $authorInitial = strtoupper(substr($announcement->postedBy?->name ?? 'S', 0, 1));
+                    $categoryClass = match(strtolower($announcement->category)) {
+                        'emergency' => 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
+                        'events' => 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
+                        'academic' => 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+                        'administrative' => 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
+                        default => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                    };
+                    $avatarClass = match(strtolower($announcement->category)) {
+                        'emergency' => 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
+                        'events' => 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
+                        'academic' => 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+                        'administrative' => 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
+                        default => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                    };
                 @endphp
-                <div class="ann-card" id="card-{{ $announcement->id }}" data-category="{{ strtolower($announcement->category) }}">
-                    <div class="ann-meta-top">
+                <div class="ann-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-all" id="card-{{ $announcement->id }}" data-category="{{ strtolower($announcement->category) }}">
+                    <div class="flex items-start justify-between gap-4 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full {{ $avatarClass }} overflow-hidden flex items-center justify-center font-bold">
+                                {{ $authorInitial }}
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $announcement->postedBy?->name ?? 'System' }}</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $announcement->created_at->format('M d, Y') }} · {{ $announcement->category }}</p>
+                            </div>
+                        </div>
                         @if($announcement->is_pinned)
-                            <span class="pinned-label">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
-                                </svg>
-                                Pinned
-                            </span>
+                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase rounded-md tracking-wider">Pinned</span>
                         @endif
-                        <span class="tag {{ strtolower($announcement->category) }}">{{ $announcement->category }}</span>
                     </div>
-                    <div class="ann-title">{{ $announcement->title }}</div>
-                    <div class="ann-author">
-                        <span>
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
-                            </svg>
-                            {{ $announcement->postedBy?->name ?? 'System' }}
-                        </span>
-                        <span>
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                            </svg>
-                            {{ $announcement->created_at->format('Y-m-d') }}
-                        </span>
-                    </div>
-                    <div class="ann-body">
+                    
+                    <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $announcement->title }}</h3>
+                    
+                    <div class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed {{ $mediaCount > 0 ? 'mb-4' : '' }}">
                         {{ $announcement->content }}
                     </div>
 
                     @if($mediaCount > 0)
-                        {{-- Media Gallery --}}
-                        <div class="ann-gallery" data-total="{{ $mediaCount }}">
-                            <div class="gallery-track">
-                                @foreach($mediaPaths as $path)
-                                    @php
-                                        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-                                        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif']);
-                                        $isVideo = in_array($extension, ['mp4', 'mov', 'avi']);
-                                    @endphp
-                                    <div class="gallery-item">
-                                        @if($isImage)
-                                            <img src="{{ asset('storage/'.$path) }}" alt="{{ $announcement->title }}" class="ann-image">
-                                        @elseif($isVideo)
-                                            <video class="ann-video ann-image" preload="metadata">
-                                                <source src="{{ asset('storage/'.$path) }}" type="video/mp4">
-                                            </video>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
-                            @if($mediaCount > 1)
-                                <button class="gallery-btn gallery-prev" aria-label="Previous">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                                    </svg>
-                                </button>
-                                <button class="gallery-btn gallery-next" aria-label="Next">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-                                </button>
-                                <div class="gallery-counter">1 / {{ $mediaCount }}</div>
-                            @endif
+                        {{-- Photo Display (Grid Layout like Admin/Teacher) --}}
+                        <div class="grid {{ $mediaCount > 1 ? 'grid-cols-2' : 'grid-cols-1' }} gap-3 mt-4">
+                            @foreach($mediaPaths as $path)
+                                @php
+                                    $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+                                    $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif']);
+                                    $isVideo = in_array($extension, ['mp4', 'mov', 'avi']);
+                                @endphp
+                                <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
+                                    @if($isImage)
+                                        <img src="{{ asset('storage/'.$path) }}" alt="{{ $announcement->title }}" class="w-full h-full object-cover">
+                                    @elseif($isVideo)
+                                        <video class="w-full h-full object-cover" controls preload="metadata">
+                                            <source src="{{ asset('storage/'.$path) }}" type="video/mp4">
+                                        </video>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
                     @endif
 
-                    <div class="reactions">
-                        <button class="reaction-btn"><span class="emoji">❤️</span> {{ $announcement->heart_count ?? 0 }}</button>
-                        <button class="reaction-btn"><span class="emoji">👍</span> {{ $announcement->like_count ?? 0 }}</button>
-                        <button class="reaction-btn"><span class="emoji">🔥</span> {{ $announcement->fire_count ?? 0 }}</button>
-                        <button class="reaction-btn"><span class="emoji">😮</span> {{ $announcement->sad_count ?? 0 }}</button>
+                    <div class="flex items-center gap-3 mt-4">
+                        <button class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">❤️ {{ $announcement->heart_count ?? 0 }}</button>
+                        <button class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">👍 {{ $announcement->like_count ?? 0 }}</button>
+                        <button class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">🔥 {{ $announcement->fire_count ?? 0 }}</button>
+                        <button class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">😮 {{ $announcement->sad_count ?? 0 }}</button>
                     </div>
                 </div>
             @empty
-                <p class="text-center text-muted py-10">No announcements found.</p>
+                <div class="empty-state" style="display: flex;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                    </svg>
+                    <p>No announcements found.</p>
+                </div>
             @endforelse
         </div>
     </div>

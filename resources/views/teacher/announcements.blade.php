@@ -27,18 +27,38 @@
         </div>
 
         <div class="space-y-3">
-            @php
-                $filter = request('category', 'All');
-                $announcements = $filter === 'All'
-                    ? \App\Models\Announcement::with('postedBy')->orderBy('is_pinned', 'desc')->orderBy('pinned_at', 'desc')->latest()->get()
-                    : \App\Models\Announcement::with('postedBy')->where('category', $filter)->orderBy('is_pinned', 'desc')->orderBy('pinned_at', 'desc')->latest()->get();
-            @endphp
+            {{-- Static Announcements --}}
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                            AD
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Admin</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">2026-03-10 · Urgent</p>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">Campus Maintenance Notice</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">The campus will undergo scheduled electrical maintenance this Saturday. All buildings will be closed from 8 AM to 5 PM.</p>
+            </div>
 
-            @forelse($announcements as $announcement)
-                <x-announcement-card :announcement="$announcement" />
-            @empty
-                <p class="text-sm text-gray-500 dark:text-gray-400">No announcements found.</p>
-            @endforelse
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                            PW
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Prof. Westfield</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">2026-03-08 · Events</p>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">Science Fair 2026</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Join us for the annual Science Fair! Students from all departments are invited to showcase their innovative projects.</p>
+            </div>
         </div>
     </div>
 </x-app-layout>

@@ -1,4 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ── Success Modal ──
+    const successModal = document.getElementById('successModal');
+    const successModalOverlay = document.getElementById('successModalOverlay');
+    const closeSuccessModalBtn = document.getElementById('closeSuccessModalBtn');
+    const successModalMessage = document.getElementById('successModalMessage');
+
+    function showSuccess(msg) {
+        if (successModalMessage) successModalMessage.textContent = msg;
+        if (successModal) successModal.classList.add('show');
+    }
+
+    function closeSuccessModal() {
+        if (successModal) successModal.classList.remove('show');
+    }
+
+    if (closeSuccessModalBtn) closeSuccessModalBtn.addEventListener('click', closeSuccessModal);
+    if (successModalOverlay) successModalOverlay.addEventListener('click', closeSuccessModal);
+    const closeSuccessModalTop = document.getElementById('closeSuccessModalTop');
+    if (closeSuccessModalTop) closeSuccessModalTop.addEventListener('click', closeSuccessModal);
+
     // ── Filter Pills ──
     const filterPills   = document.querySelectorAll('.ann-filter-pill');
     const annItems      = document.querySelectorAll('.ann-list-item');
@@ -258,44 +278,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ── Delete Announcement Modal ──
+    // ── Delete Announcement ──
     const deleteAnnModal = document.getElementById('deleteAnnModal');
     const deleteAnnModalOverlay = document.getElementById('deleteAnnModalOverlay');
-    const closeDeleteAnnModal = document.getElementById('closeDeleteAnnModal');
     const cancelDeleteAnnBtn = document.getElementById('cancelDeleteAnnBtn');
-    const confirmDeleteAnnBtn = document.getElementById('confirmDeleteAnnBtn');
-    let itemToDelete = null;
-
-    function openDeleteModal(item) {
-        itemToDelete = item;
-        deleteAnnModal.classList.add('show');
-    }
+    const confirmDeleteBtn = document.getElementById('confirmDeleteAnnBtn');
+    let annToDeleteId = null;
 
     function closeDeleteModal() {
-        itemToDelete = null;
         deleteAnnModal.classList.remove('show');
+        annToDeleteId = null;
     }
 
-    if (closeDeleteAnnModal) closeDeleteAnnModal.addEventListener('click', closeDeleteModal);
     if (cancelDeleteAnnBtn) cancelDeleteAnnBtn.addEventListener('click', closeDeleteModal);
     if (deleteAnnModalOverlay) deleteAnnModalOverlay.addEventListener('click', closeDeleteModal);
+    const closeDeleteAnnModal = document.getElementById('closeDeleteAnnModal');
+    if (closeDeleteAnnModal) closeDeleteAnnModal.addEventListener('click', closeDeleteModal);
 
-    if (confirmDeleteAnnBtn) {
-        confirmDeleteAnnBtn.addEventListener('click', () => {
-            if (itemToDelete) {
-                itemToDelete.remove();
-                checkEmpty();
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (annToDeleteId) {
+                const item = document.querySelector(`[data-id="${annToDeleteId}"]`);
+                if (item) {
+                    item.remove();
+                    checkEmpty();
+                    showSuccess('Announcement deleted successfully');
+                }
+                closeDeleteModal();
             }
-            closeDeleteModal();
         });
     }
 
-    // Attach delete listeners
-    document.querySelectorAll('.ann-action-btn.delete').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const item = btn.closest('.ann-list-item');
-            if (item) openDeleteModal(item);
-        });
+    window.addEventListener('click', (e) => {
+        const deleteBtn = e.target.closest('.ann-action-btn.delete');
+        if (deleteBtn) {
+            const item = deleteBtn.closest('.ann-list-item');
+            if (item) {
+                annToDeleteId = item.dataset.id;
+                deleteAnnModal.classList.add('show');
+            }
+        }
     });
 
     // ── Form Submission ──
@@ -330,6 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (pinnedLabel) {
                         pinnedLabel.style.display = pinned === '1' ? 'inline-flex' : 'none';
                     }
+                    showSuccess('Announcement updated successfully');
                 }
             } else {
                 // Add new announcement (static)
@@ -354,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="ann-list-info">
                             <span>
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" /></svg>
-                                {{ auth()->user()->name }}
+                                Admin
                             </span>
                             <span>
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5" /></svg>
@@ -369,6 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 document.getElementById('annList').prepend(newItem);
                 checkEmpty();
+                showSuccess('Announcement published successfully');
             }
 
             newAnnModal.classList.remove('show');

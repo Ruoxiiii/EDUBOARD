@@ -13,17 +13,25 @@
         </h2>
     </x-slot>
 
+    <div class="space-y-6" x-data="{ 
+        showingSuccess: false,
+        successMessage: '',
+        showSuccess(msg) {
+            this.successMessage = msg;
+            this.showingSuccess = true;
+        }
+    }">
     <div class="max-w-2xl mx-auto">
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
-            <form method="POST" action="{{ route('announcements.update', $announcement->id) }}" enctype="multipart/form-data" class="space-y-4">
+            <form id="editAnnouncementForm" class="space-y-4">
                 @csrf
-                @method('PUT')
 
                 <div>
                     <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1.5">Title</label>
                     <input
+                        id="editAnnTitle"
                         name="title"
-                        value="{{ $announcement->title }}"
+                        value="Midterm Examination Schedule"
                         required
                         class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -32,12 +40,13 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1.5">Category</label>
                     <select
+                        id="editAnnCategory"
                         name="category"
                         required
                         class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         @foreach($categories as $cat)
-                            <option value="{{ $cat }}" {{ $announcement->category === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                            <option value="{{ $cat }}" {{ $cat === 'Academic' ? 'selected' : '' }}>{{ $cat }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -45,38 +54,13 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1.5">Content</label>
                     <textarea
+                        id="editAnnContent"
                         name="content"
                         rows="4"
                         required
                         class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                    >{{ $announcement->content }}</textarea>
+                    >The midterm exams will start next week. Please check your portals for the specific schedule and room assignments.</textarea>
                 </div>
-
-                {{-- Current Media --}}
-                @if($mediaPaths && count($mediaPaths))
-                    <div>
-                        <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1.5">Current Media</label>
-                        <div class="space-y-2">
-                            @foreach($mediaPaths as $index => $path)
-                                <div class="flex items-center gap-3 p-2 border border-gray-200 dark:border-gray-700 rounded-lg">
-                                    @php
-                                        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-                                        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif']);
-                                        $isVideo = in_array($extension, ['mp4', 'mov', 'avi']);
-                                    @endphp
-                                    @if($isImage)
-                                        <img src="{{ asset('storage/'.$path) }}" alt="Current media" class="h-16 w-16 object-cover rounded" />
-                                    @elseif($isVideo)
-                                        <div class="h-16 w-16 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-xs text-gray-500">Video</div>
-                                    @endif
-                                    <div class="flex-1 text-sm text-gray-600 dark:text-gray-400 truncate">{{ basename($path) }}</div>
-                                    <button type="button" onclick="removeMedia({{ $index }}, this)" class="text-red-600 hover:text-red-700 text-sm font-medium">Remove</button>
-                                </div>
-                                <input type="hidden" name="remove_media[]" value="{{ $index }}" id="remove_media_{{ $index }}" disabled />
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
 
                 {{-- New Media Upload --}}
                 <div>
@@ -104,7 +88,7 @@
                 </div>
 
                 <div class="flex items-center gap-2 py-2">
-                    <input type="checkbox" name="is_pinned" id="is_pinned" value="1" {{ $announcement->is_pinned ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 bg-white dark:bg-gray-900">
+                    <input type="checkbox" name="is_pinned" id="is_pinned" value="1" class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 bg-white dark:bg-gray-900">
                     <label for="is_pinned" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">Pin this announcement to top</label>
                 </div>
 
@@ -120,13 +104,66 @@
         </div>
     </div>
 
+    {{-- Custom Success Modal --}}
+    <template x-teleport="body">
+        <div 
+            x-show="showingSuccess" 
+            class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            x-cloak
+        >
+            {{-- Backdrop --}}
+            <div 
+                x-show="showingSuccess"
+                x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
+            ></div>
+
+            {{-- Modal Content --}}
+            <div 
+                x-show="showingSuccess"
+                x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700"
+            >
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Success</h3>
+                    <button @click="window.location.href = '{{ route('teacher.my-announcements') }}'" class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed" x-text="successMessage"></p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800/50 px-6 py-4 flex justify-end">
+                    <button @click="window.location.href = '{{ route('teacher.my-announcements') }}'" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition-all">
+                        Return to List
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+    </div>
+
     <script>
+        document.getElementById('editAnnouncementForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const alpineData = document.querySelector('[x-data]').__x.$data;
+            alpineData.showSuccess('Announcement updated successfully');
+        });
+
         function removeMedia(index, button) {
-            const input = document.getElementById('remove_media_' + index);
-            if (input) {
-                input.disabled = false;
-                button.closest('.flex').style.display = 'none';
-            }
+            button.closest('.flex').style.display = 'none';
         }
 
         function previewNewMedia(input) {

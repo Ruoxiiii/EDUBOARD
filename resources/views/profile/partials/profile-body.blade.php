@@ -1,7 +1,7 @@
 {{-- Left Column: Profile Header --}}
 <div class="profile-header">
-    <div class="profile-avatar">
-        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+    <div class="profile-avatar overflow-hidden">
+        <img src="{{ asset('images/download.jpg') }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
     </div>
     <div class="profile-info">
         <h1>{{ auth()->user()->name }}</h1>

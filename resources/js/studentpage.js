@@ -14,10 +14,10 @@ window.addEventListener('load', () => {
 });
 
 // ── Tabs & Category Filter ──
-const tabs = document.querySelectorAll('.tab');
-const pills = document.querySelectorAll('.pill');
+const tabs = document.querySelectorAll('.user-tab');
+const pills = document.querySelectorAll('.ann-filter-pill');
 const cards = document.querySelectorAll('.ann-card');
-const announcementsContainer = document.querySelector('.announcements');
+const announcementsContainer = document.querySelector('.ann-list');
 
 const emptyState = document.createElement('div');
 emptyState.classList.add('empty-state');
@@ -40,7 +40,7 @@ tabs.forEach(tab => {
         currentTab = tab.textContent.trim();
 
         pills.forEach(p => p.classList.remove('active'));
-        document.querySelector('.pill.all').classList.add('active');
+        document.querySelector('.ann-filter-pill[data-category="all"]').classList.add('active');
 
         applyFilter('all');
     });
@@ -52,7 +52,7 @@ pills.forEach(pill => {
         pills.forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
 
-        const filter = pill.classList[1];
+        const filter = pill.dataset.category;
         applyFilter(filter);
     });
 });
