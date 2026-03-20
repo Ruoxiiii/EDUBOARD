@@ -13,6 +13,8 @@
     --red: #ef4444;
     --amber: #f59e0b;
     --blue: #3b82f6;
+    --primary-color: var(--teal);
+    --topbar-bg: var(--surface);
 }
 
 body {
@@ -25,7 +27,7 @@ body {
 
 /* ── Navbar ── */
 .navbar {
-    background: var(--surface);
+    background: var(--topbar-bg, var(--surface));
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -91,7 +93,7 @@ body {
 
 .nav-item.active {
     background: var(--teal-bg);
-    color: var(--teal);
+    color: var(--primary-color, var(--teal));
     font-weight: 600;
 }
 
@@ -199,6 +201,55 @@ body {
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 12px;
+}
+
+.ann-filter-pill {
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'Sora', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.ann-filter-pill:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+}
+
+/* Active states for each category (all using teal – you can customise later) */
+.ann-filter-pill.all.active,
+.ann-filter-pill.academic.active,
+.ann-filter-pill.events.active,
+.ann-filter-pill.administrative.active,
+.ann-filter-pill.student-affairs.active,
+.ann-filter-pill.emergency.active,
+.ann-filter-pill.general.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .ann-filter-pill:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+}
+
+[data-theme="dark"] .ann-filter-pill.all.active,
+[data-theme="dark"] .ann-filter-pill.academic.active,
+[data-theme="dark"] .ann-filter-pill.events.active,
+[data-theme="dark"] .ann-filter-pill.administrative.active,
+[data-theme="dark"] .ann-filter-pill.student-affairs.active,
+[data-theme="dark"] .ann-filter-pill.emergency.active,
+[data-theme="dark"] .ann-filter-pill.general.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
 }
 
 .pill {

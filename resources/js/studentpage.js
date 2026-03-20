@@ -14,11 +14,12 @@ window.addEventListener('load', () => {
 });
 
 // ── Tabs & Category Filter ──
-const tabs = document.querySelectorAll('.user-tab');
-const pills = document.querySelectorAll('.ann-filter-pill');
-const cards = document.querySelectorAll('.ann-card');
-const announcementsContainer = document.querySelector('.ann-list');
+const tabs = document.querySelectorAll('.tab');                  // fixed: now uses your HTML class
+const pills = document.querySelectorAll('.ann-filter-pill');    // fixed: matches updated pills
+const cards = document.querySelectorAll('.ann-card');           // assumes all cards have this class
+const announcementsContainer = document.querySelector('.ann-list'); // fixed: container now has this class
 
+// Create empty state element
 const emptyState = document.createElement('div');
 emptyState.classList.add('empty-state');
 emptyState.innerHTML = `
@@ -39,6 +40,7 @@ tabs.forEach(tab => {
         tab.classList.add('active');
         currentTab = tab.textContent.trim();
 
+        // Reset pills to "All"
         pills.forEach(p => p.classList.remove('active'));
         document.querySelector('.ann-filter-pill[data-category="all"]').classList.add('active');
 
@@ -52,7 +54,7 @@ pills.forEach(pill => {
         pills.forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
 
-        const filter = pill.dataset.category;
+        const filter = pill.dataset.category;   // uses data-category attribute
         applyFilter(filter);
     });
 });
@@ -62,7 +64,9 @@ function applyFilter(filter) {
     let visibleCount = 0;
 
     cards.forEach(card => {
-        const matchesTab = currentTab === 'General' || card.dataset.forYou === 'true';
+        // Temporarily ignore the "For You" tab until you add data-for-you attributes
+        // const matchesTab = currentTab === 'General' || card.dataset.forYou === 'true';
+        const matchesTab = true;   // show all cards regardless of tab
         const matchesFilter = filter === 'all' || card.dataset.category === filter;
 
         if (matchesTab && matchesFilter) {
@@ -76,7 +80,7 @@ function applyFilter(filter) {
     emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
 }
 
-// ── Reactions ──
+// ── Reactions ── (unchanged)
 document.querySelectorAll('.reaction-btn').forEach(btn => {
     const countText = btn.textContent.trim().split(' ').pop();
     btn.dataset.count = parseInt(countText);
@@ -101,8 +105,7 @@ document.querySelectorAll('.reaction-btn').forEach(btn => {
     });
 });
 
-// ── Media orientation helper ──
-// Detects portrait/landscape after load and applies the correct frame class
+// ── Media orientation helper (unchanged) ──
 function applyOrientation(mediaEl, frameEl) {
     function detect() {
         const w = mediaEl.naturalWidth  || mediaEl.videoWidth  || mediaEl.offsetWidth;
@@ -151,8 +154,7 @@ const modalBody   = modal.querySelector('.media-modal-body');
 const modalClose  = modal.querySelector('.media-modal-close');
 const modalOverlay = modal.querySelector('.media-modal-overlay');
 
-// Wrap images/videos with hover overlay
-// SKIP media inside .ann-gallery — those are handled by the gallery modal
+// Wrap images/videos with hover overlay (skip gallery items)
 document.querySelectorAll('.ann-image, .ann-video').forEach(media => {
     if (media.closest('.ann-gallery')) return;
 
@@ -209,7 +211,6 @@ modalClose.addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', closeModal);
 
 document.addEventListener('keydown', (e) => {
-    // Only close single modal if gallery modal is NOT open
     if (e.key === 'Escape' && !galleryModal.classList.contains('show')) closeModal();
 });
 

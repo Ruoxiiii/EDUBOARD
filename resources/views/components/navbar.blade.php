@@ -1,8 +1,12 @@
 <nav class="navbar" data-student-page="{{ route('student.page') }}">
     <div class="navbar-inner">
         <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="navbar-brand">
-            <img src="{{ asset('images/Logo.jpg') }}" alt="Westfield Academy Logo" class="brand-icon">
-            <span class="brand-name">Westfield Academy</span>
+            @if(!empty($appearance['customLogo']))
+                <img src="{{ asset('storage/' . $appearance['customLogo']) }}" alt="EduBoard Logo" class="brand-icon" style="object-fit: contain;">
+            @else
+                <img src="{{ asset('images/Logo.jpg') }}" alt="EduBoard Logo" class="brand-icon">
+            @endif
+            <span class="brand-name">EduBoard</span>
         </a>
 
         <div class="navbar-nav">

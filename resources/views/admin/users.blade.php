@@ -3,19 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Users - EduBoard Admin</title>
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js', 'resources/js/users.js'])
+    @include('partials.appearance-script')
 </head>
 <body>
 
-<div class="admin-layout">
+<div class="admin-layout {{ ($appearance['navPos'] ?? 'left') === 'top' ? 'nav-top' : (($appearance['navPos'] ?? 'left') === 'right' ? 'nav-right' : 'nav-left') }}">
     <x-admin-sidebar />
     <div class="admin-main">
         <x-admin-topbar title="Users" />
@@ -278,8 +273,8 @@
 {{-- Add/Edit User Modal --}}
 <div class="admin-modal" id="userModal">
     <div class="admin-modal-overlay" id="userModalOverlay"></div>
-    <div class="admin-modal-box">
-        <div class="admin-modal-header">
+    <div class="admin-modal-box" style="padding:0; display:flex; flex-direction:column; overflow:hidden;">
+        <div class="admin-modal-header" style="padding:24px 32px 16px; margin-bottom:0;">
             <h3 id="userModalTitle">Add User</h3>
             <button class="admin-modal-close" id="closeUserModal">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -287,58 +282,71 @@
                 </svg>
             </button>
         </div>
-        <form class="admin-modal-form" id="userForm">
+        <form class="admin-modal-form" id="userForm" style="display:flex; flex-direction:column; flex:1; overflow:hidden; gap:0;">
             @csrf
             <input type="hidden" id="userId">
 
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="userName" class="form-control" placeholder="e.g. Juan Dela Cruz">
+            <div style="flex:1; overflow-y:auto; padding:8px 32px 16px; display:flex; flex-direction:column; gap:16px;">
+                {{-- Avatar Row --}}
+                <div style="display:flex; align-items:center; gap:16px; padding:4px 0 16px; border-bottom:1px solid var(--border);">
+                    <div id="modalAvatarDisplay" style="width:64px; height:64px; border-radius:50%; background:var(--teal-bg); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; color:var(--teal); font-family:'Sora',sans-serif; flex-shrink:0; overflow:hidden;">
+                        U
+                    </div>
+                    <div>
+                        <p style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px;" id="modalAvatarName">User</p>
+                        <p style="font-size:11px; color:var(--muted);">Fields below will update the user record</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="userName" class="form-control" placeholder="e.g. Juan Dela Cruz">
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="userEmail" class="form-control" placeholder="e.g. juan@example.com">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="userRole" class="form-control">
+                            <option value="teacher">Teacher</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="userStatus" class="form-control">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Department</label>
+                        <select id="userDepartment" class="form-control">
+                            <option value="">Select Department</option>
+                            <option value="COT">COT - College of Technology</option>
+                            <option value="COB">COB - College of Business</option>
+                            <option value="CON">CON - College of Nursing</option>
+                            <option value="COE">COE - College of Education</option>
+                            <option value="COAS">COAS - College of Arts & Sciences</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Course</label>
+                        <select id="userCourse" class="form-control" disabled>
+                            <option value="">Select Department first</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="userEmail" class="form-control" placeholder="e.g. juan@example.com">
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Role</label>
-                    <select id="userRole" class="form-control">
-                        <option value="teacher">Teacher</option>
-                        <option value="student">Student</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="userStatus" class="form-control">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Department</label>
-                    <select id="userDepartment" class="form-control">
-                        <option value="">Select Department</option>
-                        <option value="COT">COT - College of Technology</option>
-                        <option value="COB">COB - College of Business</option>
-                        <option value="CON">CON - College of Nursing</option>
-                        <option value="COE">COE - College of Education</option>
-                        <option value="COAS">COAS - College of Arts & Sciences</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Course</label>
-                    <select id="userCourse" class="form-control" disabled>
-                        <option value="">Select Department first</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="admin-modal-actions">
+            <div class="admin-modal-actions" style="padding:16px 32px 24px; margin-top:0; border-top:1px solid var(--border);">
                 <button type="button" class="btn-cancel" id="cancelUserBtn">Cancel</button>
                 <button type="submit" class="btn-save" id="saveUserBtn">Save</button>
             </div>

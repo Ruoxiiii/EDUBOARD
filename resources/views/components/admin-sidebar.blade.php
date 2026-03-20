@@ -1,11 +1,17 @@
 <aside class="sidebar">
     <div class="sidebar-brand">
-        <div class="sidebar-brand-icon">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 4.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm3 10.5H9v-4h6v4z"/>
-            </svg>
-        </div>
-        <span class="sidebar-brand-name">EduBoard</span>
+        <a href="{{ route('admin.dashboard') }}" class="sidebar-brand-link">
+            <div class="sidebar-brand-icon">
+                @if(!empty($appearance['customLogo']))
+                    <img src="{{ asset('storage/' . $appearance['customLogo']) }}" alt="EduBoard Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                @else
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 4.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm3 10.5H9v-4h6v4z"/>
+                    </svg>
+                @endif
+            </div>
+            <span class="sidebar-brand-name">EduBoard</span>
+        </a>
     </div>
 
     <nav class="sidebar-nav">
@@ -51,12 +57,6 @@
             Users
         </a>
 
-        <a href="{{ route('admin.templates') }}" class="sidebar-item {{ request()->routeIs('admin.templates') ? 'active' : '' }}">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-            </svg>
-            Templates
-        </a>
 
         <a href="{{ route('admin.reports') }}" class="sidebar-item {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -83,14 +83,43 @@
         </a>
     </nav>
 
-    <div class="sidebar-footer">
-        <div class="sidebar-user">
-            <div class="sidebar-avatar">
-                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+    <div class="sidebar-footer" x-data="{ open: false }">
+        <div class="sidebar-user-wrapper" @click.away="open = false">
+            <div class="sidebar-user" @click="open = !open">
+                <div class="sidebar-avatar">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                </div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name">{{ auth()->user()->name }}</div>
+                    <div class="sidebar-user-role">{{ ucfirst(auth()->user()->role) }}</div>
+                </div>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" class="sidebar-user-chevron" :class="open ? 'rotate-180' : ''">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
             </div>
-            <div class="sidebar-user-info">
-                <div class="sidebar-user-name">{{ auth()->user()->name }}</div>
-                <div class="sidebar-user-role">Administrator</div>
+
+            <div class="sidebar-user-dropdown" x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" style="display: none;">
+                <div class="dropdown-header">
+                    <div class="name">{{ auth()->user()->name }}</div>
+                    <div class="email">{{ auth()->user()->email }}</div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
+                    </svg>
+                    Profile Settings
+                </a>
+                <div class="dropdown-divider"></div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="dropdown-item logout">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                        </svg>
+                        Log Out
+                    </button>
+                </form>
             </div>
         </div>
     </div>

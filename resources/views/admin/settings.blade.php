@@ -3,20 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Settings - EduBoard</title>
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js', 'resources/js/settings.js'])
+    @include('partials.appearance-script')
 </head>
 <body>
 
-<div class="admin-layout">
-
+<div class="admin-layout {{ ($appearance['navPos'] ?? 'left') === 'top' ? 'nav-top' : (($appearance['navPos'] ?? 'left') === 'right' ? 'nav-right' : 'nav-left') }}">
     {{-- Left Sidebar --}}
     <x-admin-sidebar />
 
@@ -48,9 +42,12 @@
                             </div>
                         </div>
                         <div class="settings-card-body">
+                            @php
+                                $currentTheme = $appearance['theme'] ?? 'light';
+                            @endphp
                             <div class="theme-selector-grid">
                                 <label class="theme-option">
-                                    <input type="radio" name="color-theme" value="light" checked>
+                                    <input type="radio" name="color-theme" value="light" {{ $currentTheme === 'light' ? 'checked' : '' }}>
                                     <div class="theme-preview light">
                                         <div class="preview-sidebar"></div>
                                         <div class="preview-content">
@@ -61,7 +58,7 @@
                                     <span>Light Mode</span>
                                 </label>
                                 <label class="theme-option">
-                                    <input type="radio" name="color-theme" value="dark">
+                                    <input type="radio" name="color-theme" value="dark" {{ $currentTheme === 'dark' ? 'checked' : '' }}>
                                     <div class="theme-preview dark">
                                         <div class="preview-sidebar"></div>
                                         <div class="preview-content">
@@ -72,14 +69,14 @@
                                     <span>Dark Mode</span>
                                 </label>
                                 <label class="theme-option">
-                                    <input type="radio" name="color-theme" value="system">
+                                    <input type="radio" name="color-theme" value="system" {{ $currentTheme === 'system' ? 'checked' : '' }}>
                                     <div class="theme-preview system">
                                         <div class="preview-split"></div>
                                     </div>
                                     <span>System Default</span>
                                 </label>
                                 <label class="theme-option">
-                                    <input type="radio" name="color-theme" value="custom">
+                                    <input type="radio" name="color-theme" value="custom" {{ $currentTheme === 'custom' ? 'checked' : '' }}>
                                     <div class="theme-preview custom">
                                         <div class="preview-dots">
                                             <div class="dot color-1"></div>
@@ -92,45 +89,136 @@
                             </div>
 
                             {{-- Custom Theme Controls (Hidden by default) --}}
-                            <div id="customThemeControls" class="mt-8 space-y-4" style="display: none;">
+                            <div id="customThemeControls" class="mt-8 space-y-4" style="{{ $currentTheme === 'custom' ? 'display: block;' : 'display: none;' }}">
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="form-group-modern">
                                         <label>Primary Color</label>
                                         <div class="color-picker-wrapper">
-                                            <input type="color" id="primaryColorPicker" value="#0d9488" class="color-input">
-                                            <span class="color-hex" id="primaryHex">#0D9488</span>
+                                            <input type="color" id="primaryColorPicker" value="{{ $appearance['customPrimary'] ?? '#0d9488' }}" class="color-input">
+                                            <span class="color-hex" id="primaryHex">{{ strtoupper($appearance['customPrimary'] ?? '#0D9488') }}</span>
                                         </div>
                                     </div>
                                     <div class="form-group-modern">
                                         <label>Topbar Background</label>
                                         <div class="color-picker-wrapper">
-                                            <input type="color" id="topbarColorPicker" value="#ffffff" class="color-input">
-                                            <span class="color-hex" id="topbarHex">#FFFFFF</span>
+                                            <input type="color" id="topbarColorPicker" value="{{ $appearance['customTopbar'] ?? '#ffffff' }}" class="color-input">
+                                            <span class="color-hex" id="topbarHex">{{ strtoupper($appearance['customTopbar'] ?? '#FFFFFF') }}</span>
                                         </div>
                                     </div>
                                     <div class="form-group-modern">
                                         <label>Sidebar Background</label>
                                         <div class="color-picker-wrapper">
-                                            <input type="color" id="sidebarColorPicker" value="#111827" class="color-input">
-                                            <span class="color-hex" id="sidebarHex">#111827</span>
+                                            <input type="color" id="sidebarColorPicker" value="{{ $appearance['customSidebar'] ?? '#111827' }}" class="color-input">
+                                            <span class="color-hex" id="sidebarHex">{{ strtoupper($appearance['customSidebar'] ?? '#111827') }}</span>
                                         </div>
                                     </div>
                                     <div class="form-group-modern">
                                         <label>Sidebar Text</label>
                                         <div class="color-picker-wrapper">
-                                            <input type="color" id="sidebarTextColorPicker" value="#9ca3af" class="color-input">
-                                            <span class="color-hex" id="sidebarTextHex">#9CA3AF</span>
+                                            <input type="color" id="sidebarTextColorPicker" value="{{ $appearance['customSidebarText'] ?? '#9ca3af' }}" class="color-input">
+                                            <span class="color-hex" id="sidebarTextHex">{{ strtoupper($appearance['customSidebarText'] ?? '#9CA3AF') }}</span>
                                         </div>
                                     </div>
                                     <div class="form-group-modern">
                                         <label>Sidebar Active</label>
                                         <div class="color-picker-wrapper">
-                                            <input type="color" id="sidebarActiveColorPicker" value="#0d9488" class="color-input">
-                                            <span class="color-hex" id="sidebarActiveHex">#0D9488</span>
+                                            <input type="color" id="sidebarActiveColorPicker" value="{{ $appearance['customSidebarActive'] ?? '#0d9488' }}" class="color-input">
+                                            <span class="color-hex" id="sidebarActiveHex">{{ strtoupper($appearance['customSidebarActive'] ?? '#0D9488') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group-modern">
+                                        <label>Main Background</label>
+                                        <div class="color-picker-wrapper">
+                                            <input type="color" id="mainBgColorPicker" value="{{ $appearance['customMainBg'] ?? '#f0f4f3' }}" class="color-input">
+                                            <span class="color-hex" id="mainBgHex">{{ strtoupper($appearance['customMainBg'] ?? '#F0F4F3') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group-modern">
+                                        <label>Main Text</label>
+                                        <div class="color-picker-wrapper">
+                                            <input type="color" id="mainTextColorPicker" value="{{ $appearance['customMainText'] ?? '#1a1a1a' }}" class="color-input">
+                                            <span class="color-hex" id="mainTextHex">{{ strtoupper($appearance['customMainText'] ?? '#1A1A1A') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group-modern">
+                                        <label>Secondary Text</label>
+                                        <div class="color-picker-wrapper">
+                                            <input type="color" id="secondaryTextColorPicker" value="{{ $appearance['customSecondaryText'] ?? '#8a9399' }}" class="color-input">
+                                            <span class="color-hex" id="secondaryTextHex">{{ strtoupper($appearance['customSecondaryText'] ?? '#8A9399') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group-modern">
+                                        <label>Card Background</label>
+                                        <div class="color-picker-wrapper">
+                                            <input type="color" id="surfaceColorPicker" value="{{ $appearance['customSurface'] ?? '#ffffff' }}" class="color-input">
+                                            <span class="color-hex" id="surfaceHex">{{ strtoupper($appearance['customSurface'] ?? '#FFFFFF') }}</span>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group-modern mt-4 space-y-2">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="applyToTeacher" class="w-4 h-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500" {{ ($appearance['applyToTeacher'] ?? '0') == '1' ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium">Apply appearance to Teachers</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="applyToStudent" class="w-4 h-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500" {{ ($appearance['applyToStudent'] ?? '0') == '1' ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium">Apply appearance to Students</span>
+                                    </label>
+                                </div>
+                                <div class="settings-actions">
+                                    <button type="button" id="saveAppearanceBtn" class="btn-save-settings">Save Appearance</button>
+                                </div>
                                 <p class="text-[11px] text-muted italic">Note: Custom theme colors will be applied across the entire EduBoard interface.</p>
+                            </div>
+
+                            {{-- Navigation Position --}}
+                            <div class="mt-8">
+                                <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Navigation Position</h4>
+                                <div class="theme-selector-grid">
+                                    <label class="theme-option">
+                                        <input type="radio" name="nav-pos" value="left" {{ ($appearance['navPos'] ?? 'left') === 'left' ? 'checked' : '' }}>
+                                        <div class="theme-preview" style="display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                                            <div class="preview-sidebar left"></div>
+                                            <div class="preview-content">
+                                                <div class="preview-line"></div>
+                                                <div class="preview-line short"></div>
+                                            </div>
+                                            <div style="position: absolute; bottom: 8px; width: 100%; text-align: center; font-size: 10px; font-weight: 800; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px;">Left</div>
+                                        </div>
+                                    </label>
+                                    <label class="theme-option">
+                                        <input type="radio" name="nav-pos" value="right" {{ ($appearance['navPos'] ?? 'left') === 'right' ? 'checked' : '' }}>
+                                        <div class="theme-preview" style="display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                                            <div class="preview-sidebar right"></div>
+                                            <div class="preview-content" style="margin-left: 10%; margin-right: 30%;">
+                                                <div class="preview-line"></div>
+                                                <div class="preview-line short"></div>
+                                            </div>
+                                            <div style="position: absolute; bottom: 8px; width: 100%; text-align: center; font-size: 10px; font-weight: 800; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px;">Right</div>
+                                        </div>
+                                    </label>
+                                    <label class="theme-option">
+                                        <input type="radio" name="nav-pos" value="top" {{ ($appearance['navPos'] ?? 'left') === 'top' ? 'checked' : '' }}>
+                                        <div class="theme-preview" style="display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                                            <div class="preview-topbar"></div>
+                                            <div class="preview-content" style="margin-left: 10%; margin-top: 25px;">
+                                                <div class="preview-line"></div>
+                                                <div class="preview-line short"></div>
+                                            </div>
+                                            <div style="position: absolute; bottom: 8px; width: 100%; text-align: center; font-size: 10px; font-weight: 800; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px;">Top</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="form-group-modern mt-4">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="syncNavToTeacher" class="w-4 h-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500" {{ ($appearance['syncNavToTeacher'] ?? '1') == '1' ? 'checked' : '' }}>
+                                        <span class="text-sm font-medium">Apply this layout to Teacher portal</span>
+                                    </label>
+                                </div>
+                                <div class="settings-actions mt-4">
+                                    <button type="button" id="updateNavBtn" class="btn-save-settings" style="background: var(--teal); color: white; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">Update Navigation</button>
+                                </div>
+                                <p class="text-[11px] text-muted italic mt-3">Note: Updating the navigation position will always apply to Admin, and Teacher if selected.</p>
                             </div>
                         </div>
                     </div>
@@ -187,6 +275,53 @@
                                 </div>
                                 <p class="upload-tip">Recommended: PNG or JPG, square aspect ratio, at least 200x200px.</p>
                                 <button type="button" class="btn-outline-settings" id="resetLogoBtn">Reset to Default</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card-modern">
+                        <div class="settings-card-header">
+                            <div class="settings-card-icon" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9;">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                            </div>
+                            <div>
+                                <h3>System Updates</h3>
+                                <p>Keep EduBoard up to date.</p>
+                            </div>
+                        </div>
+                        <div class="settings-card-body">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <span style="font-size: 14px; font-weight: 500; color: var(--text);">Current Version</span>
+                                <span style="font-size: 13px; font-weight: 600; color: var(--teal); background: rgba(13, 148, 136, 0.1); padding: 4px 10px; border-radius: 999px;">v1.0.0</span>
+                            </div>
+                            <button type="button" class="btn-outline-settings w-full" style="display:flex; justify-content:center; align-items:center; gap:8px;">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px; height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                Check For Updates
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card-modern">
+                        <div class="settings-card-header">
+                            <div class="settings-card-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
+                            </div>
+                            <div>
+                                <h3>Backup & Restore</h3>
+                                <p>Manage your system data.</p>
+                            </div>
+                        </div>
+                        <div class="settings-card-body">
+                            <p class="text-[12.5px] text-muted mb-4 leading-relaxed">Create a backup archive of your database and essential files, or restore from a previous backup.</p>
+                            <div style="display:flex; flex-direction:column; gap:12px;">
+                                <button type="button" class="btn-save-settings w-full" style="display:flex; justify-content:center; align-items:center; gap:8px;">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px; height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                    Generate Backup
+                                </button>
+                                <button type="button" class="btn-outline-settings w-full" style="display:flex; justify-content:center; align-items:center; gap:8px;">
+                                    <svg fill="none" class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24" style="width:18px; height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+                                    Restore from File
+                                </button>
                             </div>
                         </div>
                     </div>

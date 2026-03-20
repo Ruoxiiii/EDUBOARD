@@ -223,6 +223,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function openUserModal(user = null) {
         userForm.reset();
+        const avatarDisplay = document.getElementById('modalAvatarDisplay');
+        const avatarName = document.getElementById('modalAvatarName');
+        
         if (user) {
             userModalTitle.textContent = user.isApproving ? 'Approve & Edit User' : 'Edit User';
             userId.value = user.id;
@@ -234,18 +237,41 @@ document.addEventListener('DOMContentLoaded', () => {
             if (user.isApproving) userForm.dataset.approving = "true";
             else delete userForm.dataset.approving;
             
-            // Note: Course population logic will need to be more robust
             userCourse.innerHTML = `<option value="${user.course}">${user.course}</option>`;
             userCourse.disabled = false;
+            
+            if (avatarName) avatarName.textContent = user.name;
+            if (avatarDisplay) avatarDisplay.textContent = user.name.substring(0, 2).toUpperCase() || 'U';
+            
         } else {
             userModalTitle.textContent = 'Add User';
             delete userForm.dataset.approving;
+            
+            if (avatarName) avatarName.textContent = 'New User';
+            if (avatarDisplay) avatarDisplay.textContent = 'U';
         }
+        
+        // Live update avatar while typing
+        const nameInputHandler = (e) => {
+            const val = e.target.value.trim() || 'New User';
+            if (avatarName) avatarName.textContent = val;
+            if (avatarDisplay) avatarDisplay.textContent = val !== 'New User' ? val.substring(0, 2).toUpperCase() : 'U';
+        };
+        userName.addEventListener('input', nameInputHandler);
+        
+        // Remove listener on close
+        userModal.dataset.listenerAttached = true;
+        userModal._nameInputHandler = nameInputHandler;
+
         userModal.classList.add('show');
     }
 
     function closeUserModalFunc() {
         userModal.classList.remove('show');
+        if (userModal.dataset.listenerAttached) {
+            userName.removeEventListener('input', userModal._nameInputHandler);
+            delete userModal.dataset.listenerAttached;
+        }
     }
 
     if (addUserBtn) {

@@ -3,21 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Dashboard - EduBoard</title>
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js'])
+    @include('partials.appearance-script')
 </head>
 <body>
 
-<div class="admin-layout">
-
-    {{-- Left Sidebar --}}
+<div class="admin-layout {{ ($appearance['navPos'] ?? 'left') === 'top' ? 'nav-top' : (($appearance['navPos'] ?? 'left') === 'right' ? 'nav-right' : 'nav-left') }}">
+    {{-- Sidebar --}}
     <x-admin-sidebar />
 
     {{-- Main --}}
@@ -39,7 +33,7 @@
                 <div class="stat-card">
                     <div class="stat-info">
                         <div class="stat-label">Total Announcements</div>
-                        <div class="stat-value">8</div>
+                        <div class="stat-value">{{ $totalAnnouncements }}</div>
                     </div>
                     <div class="stat-icon teal">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -51,7 +45,7 @@
                 <div class="stat-card">
                     <div class="stat-info">
                         <div class="stat-label">Total Teachers</div>
-                        <div class="stat-value">5</div>
+                        <div class="stat-value">{{ $totalTeachers }}</div>
                     </div>
                     <div class="stat-icon blue">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -63,7 +57,7 @@
                 <div class="stat-card">
                     <div class="stat-info">
                         <div class="stat-label">Total Students</div>
-                        <div class="stat-value">5</div>
+                        <div class="stat-value">{{ $totalStudents }}</div>
                     </div>
                     <div class="stat-icon amber">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -75,7 +69,7 @@
                 <a href="{{ route('admin.users') }}?tab=pending" class="stat-card hover:border-red-400 transition-colors">
                     <div class="stat-info">
                         <div class="stat-label">Pending Approvals</div>
-                        <div class="stat-value text-red-500">2</div>
+                        <div class="stat-value {{ $pendingApprovalsCount > 0 ? 'text-red-500' : '' }}">{{ $pendingApprovalsCount }}</div>
                     </div>
                     <div class="stat-icon red" style="background: #fef2f2; color: #ef4444;">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -94,55 +88,65 @@
                     </div>
 
                     <div class="space-y-4">
-                        {{-- Card 1 --}}
-                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-all">
-                            <div class="flex items-start justify-between gap-4 mb-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 overflow-hidden flex items-center justify-center text-red-600 dark:text-red-400 font-bold">
-                                        AS
+                        @forelse($recentAnnouncements as $announcement)
+                            @php
+                                $mediaPaths = is_array($announcement->media_paths) ? $announcement->media_paths : json_decode($announcement->media_paths ?? '[]', true) ?? [];
+                                $mediaCount = count($mediaPaths);
+                                $authorInitial = strtoupper(substr($announcement->postedBy?->name ?? 'S', 0, 1));
+                                $categoryClass = match(strtolower($announcement->category)) {
+                                    'emergency' => 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
+                                    'events' => 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
+                                    'academic' => 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+                                    'administrative' => 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
+                                    default => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                                };
+                            @endphp
+                            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-all">
+                                <div class="flex items-start justify-between gap-4 mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full {{ $categoryClass }} overflow-hidden flex items-center justify-center font-bold">
+                                            {{ $authorInitial }}
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $announcement->postedBy?->name ?? 'System' }}</h4>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $announcement->created_at->format('M d, Y') }} · {{ $announcement->category }}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Admin System</h4>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">2026-03-10 · Emergency</p>
-                                    </div>
+                                    @if($announcement->is_pinned)
+                                        <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase rounded-md tracking-wider">Pinned</span>
+                                    @endif
                                 </div>
-                                <span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold uppercase rounded-md tracking-wider">Pinned</span>
-                            </div>
-                            <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">Classes Suspended on March 10</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Due to inclement weather, all classes are suspended on March 10, 2026. Please stay safe and monitor official channels for updates.</p>
-                        </div>
+                                <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $announcement->title }}</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed {{ $mediaCount > 0 ? 'mb-4' : '' }}">
+                                    {{ Str::limit($announcement->content, 200) }}
+                                </p>
 
-                        {{-- Card 2 --}}
-                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-all">
-                            <div class="flex items-start justify-between gap-4 mb-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 overflow-hidden flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                                        EC
+                                @if($mediaCount > 0)
+                                    <div class="grid {{ $mediaCount > 1 ? 'grid-cols-2' : 'grid-cols-1' }} gap-3 mt-4">
+                                        @foreach(array_slice($mediaPaths, 0, 2) as $path)
+                                            <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
+                                                @php $ext = pathinfo($path, PATHINFO_EXTENSION); @endphp
+                                                @if(in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                                    <img src="{{ asset('storage/'.$path) }}" alt="Media" class="w-full h-full object-cover">
+                                                @else
+                                                    <video class="w-full h-full object-cover" preload="metadata">
+                                                        <source src="{{ asset('storage/'.$path) }}" type="video/mp4">
+                                                    </video>
+                                                @endif
+                                            </div>
+                                        @endforeach
                                     </div>
-                                    <div>
-                                        <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Events Committee</h4>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">2026-03-07 · Events</p>
-                                    </div>
-                                </div>
-                                <span class="px-2 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 text-[10px] font-bold uppercase rounded-md tracking-wider">Pinned</span>
+                                @endif
                             </div>
-                            <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">Foundation Day Celebration</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4">Join us for the 50th Foundation Day celebration on March 15! Activities include a parade, cultural performances, and a grand alumni homecoming.</p>
-                            
-                            {{-- Photo Display --}}
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
-                                    <img src="{{ asset('images/download.jpg') }}" alt="Foundation Day 1" class="w-full h-full object-cover">
-                                </div>
-                                <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
-                                    <img src="{{ asset('images/download.jpg') }}" alt="Foundation Day 2" class="w-full h-full object-cover">
-                                </div>
+                        @empty
+                            <div class="bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-8 text-center">
+                                <p class="text-gray-500">No recent announcements found.</p>
                             </div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
 
-                {{-- Right: Pending Approvals Reference --}}
+                {{-- Right: Recent Pending Approvals --}}
                 <div class="lg:col-span-1">
                     <div class="section-header">
                         <h2>Pending Approvals</h2>
@@ -151,33 +155,24 @@
                     
                     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
                         <div class="divide-y divide-gray-100 dark:divide-gray-700">
-                            {{-- Pending User 1 --}}
-                            <div class="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-xs">
-                                        KP
+                            @forelse($recentPendingUsers as $user)
+                                <div class="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-xs">
+                                            {{ strtoupper(substr($user->name, 0, 2)) }}
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $user->name }}</p>
+                                            <p class="text-[11px] text-gray-500 dark:text-gray-400">{{ $user->course ?? 'N/A' }} · {{ $user->year_level ?? '' }}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Kevin Park</p>
-                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">COT · BSIT</p>
-                                    </div>
+                                    <span class="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-[10px] font-medium rounded-full border border-amber-100 dark:border-amber-900/30">Pending</span>
                                 </div>
-                                <span class="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-[10px] font-medium rounded-full border border-amber-100 dark:border-amber-900/30">Pending</span>
-                            </div>
-
-                            {{-- Pending User 2 --}}
-                            <div class="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-xs">
-                                        SC
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Sarah Chen</p>
-                                        <p class="text-[11px] text-gray-500 dark:text-gray-400">COB · BSBA</p>
-                                    </div>
+                            @empty
+                                <div class="p-8 text-center">
+                                    <p class="text-xs text-gray-500">No pending requests.</p>
                                 </div>
-                                <span class="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-[10px] font-medium rounded-full border border-amber-100 dark:border-amber-900/30">Pending</span>
-                            </div>
+                            @endforelse
                         </div>
                         
                         <a href="{{ route('admin.users') }}?tab=pending" class="block p-3 text-center text-xs font-medium text-blue-600 dark:text-blue-400 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">

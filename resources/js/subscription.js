@@ -1,10 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const viewPlansBtn  = document.getElementById('viewPlansBtn');
-    const plansOverlay  = document.getElementById('plansOverlay');
+    const viewPlansBtn = document.getElementById('viewPlansBtn');
+    const plansOverlay = document.getElementById('plansOverlay');
     const closePlansBtn = document.getElementById('closePlansBtn');
 
     if (viewPlansBtn) {
         viewPlansBtn.addEventListener('click', () => {
+            plansOverlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    const upgradeBtn = document.getElementById('upgradeBtn');
+    if (upgradeBtn) {
+        upgradeBtn.addEventListener('click', () => {
             plansOverlay.classList.add('show');
             document.body.style.overflow = 'hidden';
         });

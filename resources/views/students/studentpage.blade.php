@@ -3,22 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Announcements - Westfield Academy</title>
-    {{-- Prevent dark mode flash --}}
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/css/announcements.css', 'resources/js/app.js', 'resources/js/navbar.js', 'resources/js/studentpage.js', 'resources/js/theme.js', 'resources/js/datefilter.js'])
+    @include('partials.appearance-script')
 </head>
 <body>
 
     {{-- Navbar --}}
     <x-navbar />
-    
 
     {{-- Content --}}
     <div class="content">
@@ -37,13 +30,13 @@
 
         {{-- Category Pills --}}
         <div class="categories">
-            <button class="pill all active">All</button>
-            <button class="pill academic">Academic</button>
-            <button class="pill events">Events</button>
-            <button class="pill administrative">Administrative</button>
-            <button class="pill student-affairs">Student Affairs</button>
-            <button class="pill emergency">Emergency</button>
-            <button class="pill general">General</button>
+            <button class="ann-filter-pill all active" data-category="all">All</button>
+            <button class="ann-filter-pill academic" data-category="academic">Academic</button>
+            <button class="ann-filter-pill events" data-category="events">Events</button>
+            <button class="ann-filter-pill administrative" data-category="administrative">Administrative</button>
+            <button class="ann-filter-pill student-affairs" data-category="student-affairs">Student Affairs</button>
+            <button class="ann-filter-pill emergency" data-category="emergency">Emergency</button>
+            <button class="ann-filter-pill general" data-category="general">General</button>
         </div>
 
         {{-- Date Filter --}}
@@ -64,10 +57,10 @@
         </div>
 
         {{-- Announcement Cards --}}
-        <div class="space-y-4">
+        <div class="space-y-4 ann-list">  <!-- added class "ann-list" -->
             
             {{-- ── EXAMPLE ANNOUNCEMENT WITH ADMIN/TEACHER DESIGN ── --}}
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-all" data-category="events">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-all ann-card" data-category="events">  <!-- added "ann-card" and data-category -->
                 <div class="flex items-start justify-between gap-4 mb-3">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 overflow-hidden flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">

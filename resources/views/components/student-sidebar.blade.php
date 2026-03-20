@@ -1,9 +1,13 @@
 <aside class="sidebar">
     <div class="sidebar-brand">
         <div class="sidebar-brand-icon">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 4.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm3 10.5H9v-4h6v4z"/>
-            </svg>
+            @if(!empty($appearance['customLogo']))
+                <img src="{{ asset('storage/' . $appearance['customLogo']) }}" alt="EduBoard Logo" style="width: 100%; height: 100%; object-fit: contain;">
+            @else
+                <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 4.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm3 10.5H9v-4h6v4z"/>
+                </svg>
+            @endif
         </div>
         <span class="sidebar-brand-name">EduBoard</span>
     </div>

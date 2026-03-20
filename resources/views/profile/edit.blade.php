@@ -19,28 +19,30 @@
 </head>
 <body>
 
-@if(auth()->user()->role === 'admin')
+@if(auth()->check())
 
-    {{-- ── Admin Layout ── --}}
-    <div class="admin-layout">
-        <x-admin-sidebar />
+    {{-- ── Global Layout (Sidebar) for all roles ── --}}
+    <div class="admin-layout {{ ($appearance['navPos'] ?? 'left') === 'top' ? 'nav-top' : (($appearance['navPos'] ?? 'left') === 'right' ? 'nav-right' : 'nav-left') }}">
+        @if(auth()->user()->role === 'admin')
+            <x-admin-sidebar />
+        @else
+            @include('layouts.sidebar')
+        @endif
+
         <div class="admin-main">
-            <x-admin-topbar title="Profile" />
+            @if(auth()->user()->role === 'admin')
+                <x-admin-topbar title="Profile" />
+            @else
+                @include('layouts.top-navbar')
+            @endif
+
             <div class="admin-content">
-                <div class="profile-layout">
-                    @include('profile.partials.profile-body', ['user' => $user])
+                <div class="profile-content">
+                    <div class="profile-layout">
+                        @include('profile.partials.profile-body', ['user' => $user])
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-@else
-
-    {{-- ── Student / Teacher Layout ── --}}
-    <x-navbar />
-    <div class="profile-content">
-        <div class="profile-layout">
-            @include('profile.partials.profile-body', ['user' => $user])
         </div>
     </div>
 

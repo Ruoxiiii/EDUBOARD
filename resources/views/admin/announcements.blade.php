@@ -5,19 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>All Announcements - EduBoard Admin</title>
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js'])
+    @include('partials.appearance-script')
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 <body>
 
-<div class="admin-layout">
+<div class="admin-layout {{ ($appearance['navPos'] ?? 'left') === 'top' ? 'nav-top' : (($appearance['navPos'] ?? 'left') === 'right' ? 'nav-right' : 'nav-left') }}">
 
     <x-admin-sidebar />
 
@@ -85,11 +79,11 @@
                         
                         {{-- Photo Display --}}
                         <div class="grid grid-cols-2 gap-3">
-                            <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
-                                <img src="{{ asset('images/download.jpg') }}" alt="IT Seminar 1" class="w-full h-full object-cover">
+                            <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video cursor-pointer media-thumb" data-src="{{ asset('images/download.jpg') }}" data-type="image">
+                                <img src="{{ asset('images/download.jpg') }}" alt="IT Seminar 1" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
                             </div>
-                            <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
-                                <img src="{{ asset('images/download.jpg') }}" alt="IT Seminar 2" class="w-full h-full object-cover">
+                            <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video cursor-pointer media-thumb" data-src="{{ asset('images/download.jpg') }}" data-type="image">
+                                <img src="{{ asset('images/download.jpg') }}" alt="IT Seminar 2" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
                             </div>
                         </div>
                     </div>
@@ -165,6 +159,54 @@
         </div>
     </div>
 </div>
+
+{{-- Lightbox Modal --}}
+<div id="mediaLightbox" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.88); backdrop-filter:blur(4px); align-items:center; justify-content:center;" onclick="closeLightbox(event)">
+    <button onclick="closeLightboxBtn()" style="position:absolute; top:20px; right:24px; background:rgba(255,255,255,0.12); border:none; color:white; border-radius:50%; width:40px; height:40px; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">&times;</button>
+    <div style="max-width:90vw; max-height:90vh; display:flex; align-items:center; justify-content:center;">
+        <img id="lightboxImg" src="" alt="" style="display:none; max-width:90vw; max-height:86vh; object-fit:contain; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+        <video id="lightboxVideo" controls style="display:none; max-width:90vw; max-height:86vh; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.6);"></video>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.media-thumb').forEach(function(el) {
+        el.addEventListener('click', function() {
+            const src = this.getAttribute('data-src');
+            const type = this.getAttribute('data-type');
+            const lb = document.getElementById('mediaLightbox');
+            const img = document.getElementById('lightboxImg');
+            const vid = document.getElementById('lightboxVideo');
+            img.style.display = 'none';
+            vid.style.display = 'none';
+            if (type === 'video') {
+                vid.src = src;
+                vid.style.display = 'block';
+            } else {
+                img.src = src;
+                img.style.display = 'block';
+            }
+            lb.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    function closeLightbox(e) {
+        if (e.target === document.getElementById('mediaLightbox')) closeLightboxBtn();
+    }
+
+    function closeLightboxBtn() {
+        const lb = document.getElementById('mediaLightbox');
+        lb.style.display = 'none';
+        document.getElementById('lightboxVideo').pause && document.getElementById('lightboxVideo').pause();
+        document.getElementById('lightboxVideo').src = '';
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightboxBtn();
+    });
+</script>
 
 </body>
 </html>

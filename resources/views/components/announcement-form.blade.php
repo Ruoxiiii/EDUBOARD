@@ -173,13 +173,13 @@
                     const item = mediaUrls[0];
                     if (item.type === 'video') {
                         mediaHtml = `
-                            <div class="mt-4 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video bg-black">
+                            <div class="mt-4 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video bg-black media-thumb cursor-pointer" data-src="${item.url}" data-type="video">
                                 <video class="w-full h-full" controls src="${item.url}"></video>
                             </div>`;
                     } else {
                         mediaHtml = `
-                            <div class="mt-4 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-                                <img src="${item.url}" class="w-full h-auto max-h-[400px] object-cover">
+                            <div class="mt-4 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 media-thumb cursor-pointer" data-src="${item.url}" data-type="image">
+                                <img src="${item.url}" class="w-full h-auto max-h-[400px] object-cover hover:scale-105 transition-transform duration-200">
                             </div>`;
                     }
                 } else if (mediaUrls.length >= 2) {
@@ -187,13 +187,13 @@
                     mediaUrls.slice(0, 2).forEach(item => {
                         if (item.type === 'video') {
                             mediaHtml += `
-                                <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video bg-black">
+                                <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video bg-black media-thumb cursor-pointer" data-src="${item.url}" data-type="video">
                                     <video class="w-full h-full" controls src="${item.url}"></video>
                                 </div>`;
                         } else {
                             mediaHtml += `
-                                <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video">
-                                    <img src="${item.url}" class="w-full h-full object-cover">
+                                <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 aspect-video media-thumb cursor-pointer" data-src="${item.url}" data-type="image">
+                                    <img src="${item.url}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
                                 </div>`;
                         }
                     });
@@ -215,24 +215,24 @@
                                 </div>
                                 <div>
                                     <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">${document.body.dataset.userName || 'User'}</h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">${new Date().toISOString().split('T')[0]} · ${category}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 ann-meta">${new Date().toISOString().split('T')[0]} · ${category}</p>
                                 </div>
                             </div>
-                            ${isPinned ? '<span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold uppercase rounded-md tracking-wider">Pinned</span>' : ''}
+                            ${isPinned ? '<span class="ann-pinned-badge px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold uppercase rounded-md tracking-wider">Pinned</span>' : ''}
                         </div>
-                        <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">${title}</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">${content}</p>
+                        <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-2 ann-title">${title}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed ann-content">${content}</p>
                         ${mediaHtml}
                     </div>
                     <div class="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button class="p-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400">
+                        <button onclick="openEditModal(this)" class="p-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-3.5 w-3.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" />
                             </svg>
                         </button>
                         <button 
                             type="button" 
-                            onclick="this.closest('.relative.group').remove();"
+                            @click="confirmingDeletion = true"
                             class="p-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-3.5 w-3.5">
@@ -241,6 +241,21 @@
                         </button>
                     </div>
                 `;
+                // Re-attach lightbox listener to new media thumbs
+                newCard.querySelectorAll('.media-thumb').forEach(el => {
+                    el.addEventListener('click', function() {
+                        const src  = this.getAttribute('data-src');
+                        const type = this.getAttribute('data-type');
+                        const lb   = document.getElementById('mediaLightbox');
+                        const img  = document.getElementById('lightboxImg');
+                        const vid  = document.getElementById('lightboxVideo');
+                        img.style.display = 'none'; vid.style.display = 'none';
+                        if (type === 'video') { vid.src = src; vid.style.display = 'block'; }
+                        else                  { img.src = src; img.style.display = 'block'; }
+                        lb.style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+                    });
+                });
                 announcementList.prepend(newCard);
             }
             

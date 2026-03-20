@@ -1,133 +1,167 @@
-<aside class="w-72 bg-slate-900 text-slate-200 min-h-screen flex flex-col sticky top-0 border-r border-slate-800 transition-colors duration-300" style="height: 100vh;">
-    <div class="px-5 py-4 border-b border-slate-800">
-        <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-            <div class="h-9 w-9 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-white">
-                    <path d="M3 12l9-9 9 9" />
-                    <path d="M9 21V9h6v12" />
-                </svg>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <a href="{{ route('dashboard') }}" class="sidebar-brand-link">
+            <div class="sidebar-brand-icon">
+                @if(!empty($appearance['customLogo']))
+                    <img src="{{ asset('storage/' . $appearance['customLogo']) }}" alt="EduBoard Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                @else
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 4.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm3 10.5H9v-4h6v4z"/>
+                    </svg>
+                @endif
             </div>
-            <div class="leading-tight">
-                <div class="text-sm font-bold text-white">EduBoard</div>
-                <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{{ auth()->user()->role }} Portal</div>
-            </div>
-        </a> 
+            <span class="sidebar-brand-name">EduBoard</span>
+        </a>
     </div>
 
-    <nav class="px-3 py-4 flex-1 space-y-1 overflow-y-auto">
-        @php
-            $linkBase = 'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all duration-200';
-            $linkInactive = 'text-slate-400 hover:bg-slate-800/50 hover:text-white';
-            $linkActive = 'bg-blue-900/20 text-blue-400 shadow-sm shadow-blue-500/10';
-        @endphp
-
+    <nav class="sidebar-nav">
         @if(auth()->user()->role === 'admin')
-            <a href="{{ route('dashboard') }}" class="{{ $linkBase }} {{ request()->routeIs('dashboard') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M3 3h7v7H3z" />
-                    <path d="M14 3h7v7h-7z" />
-                    <path d="M14 14h7v7h-7z" />
-                    <path d="M3 14h7v7H3z" />
+            <div class="sidebar-label">Main</div>
+            <a href="{{ route('admin.dashboard') }}" class="sidebar-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
                 </svg>
-                <span>Dashboard</span>
+                Dashboard
             </a>
-            <a href="{{ route('announcements') }}" class="{{ $linkBase }} {{ request()->routeIs('announcements') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M4 4h16v16H4z" />
-                    <path d="M8 8h8" />
-                    <path d="M8 12h8" />
-                    <path d="M8 16h5" />
+            <a href="{{ route('admin.announcements') }}" class="sidebar-item {{ request()->routeIs('admin.announcements') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                 </svg>
-                <span>Announcements</span>
+                Announcements
             </a>
-            <a href="{{ route('user.management') }}" class="{{ $linkBase }} {{ request()->routeIs('user.management') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            <a href="{{ route('admin.my-announcements') }}" class="sidebar-item {{ request()->routeIs('admin.my-announcements') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 9h8" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 13h6" />
                 </svg>
-                <span>User Management</span>
+                My Announcements
             </a>
-            <a href="{{ route('categories') }}" class="{{ $linkBase }} {{ request()->routeIs('categories') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M20 7h-7l-2-2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+            <a href="{{ route('admin.categories') }}" class="sidebar-item {{ request()->routeIs('admin.categories') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
                 </svg>
-                <span>Categories</span>
+                Categories
             </a>
-            <a href="{{ route('subscriptions') }}" class="{{ $linkBase }} {{ request()->routeIs('subscriptions') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <rect x="3" y="4" width="18" height="16" rx="2" />
-                    <path d="M7 8h10" />
-                    <path d="M7 12h10" />
+
+            <div class="sidebar-label">Management</div>
+            <a href="{{ route('admin.users') }}" class="sidebar-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                 </svg>
-                <span>Subscriptions</span>
+                Users
             </a>
-            <a href="{{ route('settings') }}" class="{{ $linkBase }} {{ request()->routeIs('settings') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
-                    <path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.04.04a2.2 2.2 0 0 1-1.56 3.76h-.08a1.8 1.8 0 0 0-1.72 1.24 2.2 2.2 0 0 1-4.2 0A1.8 1.8 0 0 0 10.5 21h-1a1.8 1.8 0 0 0-1.72 1.24 2.2 2.2 0 0 1-4.2 0A1.8 1.8 0 0 0 1.86 20H1.8A2.2 2.2 0 0 1 .24 16.24l.04-.04A1.8 1.8 0 0 0 .64 14.2 2.2 2.2 0 0 1 2.2 10.44h.08A1.8 1.8 0 0 0 4 9.2a2.2 2.2 0 0 1 4.2 0A1.8 1.8 0 0 0 9.92 10.44h1.16A1.8 1.8 0 0 0 12.8 9.2a2.2 2.2 0 0 1 4.2 0A1.8 1.8 0 0 0 18.72 10.44h.08A2.2 2.2 0 0 1 21 12.64" />
+            <a href="{{ route('admin.templates') }}" class="sidebar-item {{ request()->routeIs('admin.templates') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                 </svg>
-                <span>Settings</span>
+                Templates
+            </a>
+            <a href="{{ route('admin.reports') }}" class="sidebar-item {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Reports
+            </a>
+
+            <div class="sidebar-label">System</div>
+            <a href="{{ route('admin.subscription') }}" class="sidebar-item {{ request()->routeIs('admin.subscription') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                </svg>
+                Subscription
+            </a>
+            <a href="{{ route('admin.settings') }}" class="sidebar-item {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Settings
             </a>
         @elseif(auth()->user()->role === 'teacher')
-            <a href="{{ route('teacher.dashboard') }}" class="{{ $linkBase }} {{ request()->routeIs('teacher.dashboard') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M3 3h7v7H3z" />
-                    <path d="M14 3h7v7h-7z" />
-                    <path d="M14 14h7v7h-7z" />
-                    <path d="M3 14h7v7H3z" />
+            <div class="sidebar-label">Main</div>
+            <a href="{{ route('teacher.dashboard') }}" class="sidebar-item {{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
                 </svg>
-                <span>Dashboard</span>
+                Dashboard
             </a>
-            <a href="{{ route('teacher.announcements') }}" class="{{ $linkBase }} {{ request()->routeIs('teacher.announcements') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M4 4h16v16H4z" />
-                    <path d="M8 8h8" />
-                    <path d="M8 12h8" />
-                    <path d="M8 16h5" />
+            <a href="{{ route('teacher.announcements') }}" class="sidebar-item {{ request()->routeIs('teacher.announcements') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                 </svg>
-                <span>Announcements</span>
+                Announcements
             </a>
-            <a href="{{ route('teacher.my-announcements') }}" class="{{ $linkBase }} {{ request()->routeIs('teacher.my-announcements') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
-                    <path d="M8 9h8" />
-                    <path d="M8 13h6" />
+            <a href="{{ route('teacher.my-announcements') }}" class="sidebar-item {{ request()->routeIs('teacher.my-announcements') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 9h8" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 13h6" />
                 </svg>
-                <span>My Announcements</span>
+                My Announcements
             </a>
         @else
-            <a href="{{ route('dashboard') }}" class="{{ $linkBase }} {{ request()->routeIs('dashboard') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M3 3h7v7H3z" />
-                    <path d="M14 3h7v7h-7z" />
-                    <path d="M14 14h7v7h-7z" />
-                    <path d="M3 14h7v7H3z" />
+            <div class="sidebar-label">Main</div>
+            <a href="{{ route('dashboard') }}" class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
                 </svg>
-                <span>Dashboard</span>
+                Dashboard
             </a>
-            <a href="{{ route('announcements') }}" class="{{ $linkBase }} {{ request()->routeIs('announcements') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M4 4h16v16H4z" />
-                    <path d="M8 8h8" />
-                    <path d="M8 12h8" />
-                    <path d="M8 16h5" />
+            <a href="{{ route('announcements') }}" class="sidebar-item {{ request()->routeIs('announcements') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                 </svg>
-                <span>Announcements</span>
+                Announcements
             </a>
-            <a href="{{ route('profile.edit') }}" class="{{ $linkBase }} {{ request()->routeIs('profile.edit') ? $linkActive : $linkInactive }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
+            <a href="{{ route('profile.edit') }}" class="sidebar-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
                 </svg>
-                <span>Profile</span>
+                Profile
             </a>
         @endif
     </nav>
 
-    <div class="px-5 py-4 border-t border-slate-800">
-        <div class="text-xs text-slate-500">Logged in as</div>
-        <div class="text-sm text-slate-200 truncate">{{ Auth::user()->name }}</div>
+    <div class="sidebar-footer" x-data="{ open: false }">
+        <div class="sidebar-user-wrapper" @click.away="open = false">
+            <div class="sidebar-user" @click="open = !open">
+                <div class="sidebar-avatar">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                </div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name">{{ auth()->user()->name }}</div>
+                    <div class="sidebar-user-role">{{ ucfirst(auth()->user()->role) }}</div>
+                </div>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" class="sidebar-user-chevron" :class="open ? 'rotate-180' : ''">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+            </div>
+
+            <div class="sidebar-user-dropdown" x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" style="display: none;">
+                <div class="dropdown-header">
+                    <div class="name">{{ auth()->user()->name }}</div>
+                    <div class="email">{{ auth()->user()->email }}</div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
+                    </svg>
+                    Profile Settings
+                </a>
+                <div class="dropdown-divider"></div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="dropdown-item logout">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                        </svg>
+                        Log Out
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </aside>
